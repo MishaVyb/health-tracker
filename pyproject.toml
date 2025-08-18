@@ -1,0 +1,45 @@
+[project]
+name = "health-tracker"
+version = "0.1.0"
+description = "Health Tracker Application"
+authors = [{ name = "Mikhail Vybornyi", email = "vbrn.mv@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.116.1",
+    "fhir-resources>=8.1.0",
+    "sqlalchemy>=2.0.43",
+]
+
+[dependency-groups]
+dev = [
+    "autoflake>=2.3.1",
+    "black>=25.1.0",
+    "isort>=6.0.1",
+    "mypy>=1.17.1",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = '3.13'
+ignore_missing_imports = true
+strict = true
+show_error_codes = true
+
+[tool.autoflake]
+ignore-init-module-imports = true
+remove-all-unused-imports = true
+remove-unused-variables = true
+in-place = true
+expand-star-imports = true
