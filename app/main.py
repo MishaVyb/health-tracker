@@ -1,8 +1,68 @@
-from fastapi import FastAPI
+import logging
+import logging.config
+import os
 
-app = FastAPI()
+import click
+import sentry_sdk
+import uvicorn
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.starlette import StarletteIntegration
+
+from app.app import HealthTrackerAPP
+from app.config import AppSettings
+
+logger = logging.getLogger("app.main")
 
 
-@app.get("/")
-def read_root() -> dict[str, str]:
-    return {"key": "value"}
+def setup_logging(settings: AppSettings) -> None:
+    if settings.LOG_DIR_CREATE and not settings.LOG_DIR.exists():
+        settings.LOG_DIR.mkdir()
+    logging.config.dictConfig(settings.LOGGING)
+
+
+def setup_sentry(settings: AppSettings) -> None:
+    if settings.SENTRY_DSN:
+        logger.info("Setup Sentry. Environment: %s", settings.SENTRY_ENVIRONMENT)
+        sentry_sdk.init(
+            dsn=settings.SENTRY_DSN.get_secret_value(),
+            ca_certs=settings.SENTRY_CA_CERTS,
+            release=settings.SENTRY_RELEASE,
+            environment=settings.SENTRY_ENVIRONMENT,
+            enable_tracing=settings.SENTRY_TRACING,
+            attach_stacktrace=True,
+            integrations=[StarletteIntegration(), FastApiIntegration()],
+        )
+
+
+def setup(settings: AppSettings | None = None) -> HealthTrackerAPP:
+    settings = settings or AppSettings()
+
+    # call for setup for each worker process
+    setup_logging(settings)
+    setup_sentry(settings)
+
+    logger.info("Run app worker [%s]", click.style(os.getpid(), fg="cyan", bold=True))
+    return HealthTrackerAPP.startup(settings)
+
+
+def main() -> None:
+    # setup settings and logging for main process, later it will be setup for each worker process
+    settings = AppSettings()
+    setup_logging(settings)
+    logger.info("Run %s (%s)", settings.APP_NAME, settings.APP_VERSION)
+    logger.info("Settings: %s", settings)
+    logger.debug("Unprocessed env variables: %s", settings.model_extra)
+
+    uvicorn.run(
+        "app.main:setup",
+        host=settings.APP_HOST,
+        port=settings.APP_PORT,
+        workers=settings.APP_WORKERS,
+        reload=settings.APP_RELOAD,
+        factory=True,
+        log_config=None,
+    )
+
+
+if __name__ == "__main__":
+    main()

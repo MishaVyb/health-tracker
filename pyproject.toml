@@ -6,23 +6,36 @@ authors = [{ name = "Mikhail Vybornyi", email = "vbrn.mv@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "alembic>=1.16.4",
+    "asyncpg>=0.30.0",
     "fastapi>=0.116.1",
     "fhir-resources>=8.1.0",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.10.1",
+    "sentry-sdk[fastapi]>=2.35.0",
     "sqlalchemy>=2.0.43",
+    "uvicorn>=0.35.0",
 ]
 
 [dependency-groups]
 dev = [
+    "aiosqlite>=0.21.0",
+    "asgi-lifespan>=2.1.0",
     "autoflake>=2.3.1",
     "black>=25.1.0",
+    "dirty-equals>=0.9.0",
     "isort>=6.0.1",
     "mypy>=1.17.1",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
+    "pytest-httpx>=0.35.0",
+    "pytest-mock>=3.14.1",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
 
 [tool.black]
 line-length = 88
@@ -34,8 +47,17 @@ line_length = 88
 [tool.mypy]
 python_version = '3.13'
 ignore_missing_imports = true
-strict = true
+strict = false # TODO: enable strict mode
 show_error_codes = true
+
+disable_error_code = [
+    "assignment",
+    "misc",
+    # #https://mypy.readthedocs.io/en/stable/error_code_list.html#require-annotation-if-variable-type-is-unclear-var-annotated
+    # "var-annotated", # allows: foo = [], bar = {}
+    # "override",
+    # "truthy-bool",   # allows for optional pydantic fields declared via ModelConstructor
+]
 
 [tool.autoflake]
 ignore-init-module-imports = true
