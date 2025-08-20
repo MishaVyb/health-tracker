@@ -203,3 +203,15 @@ async def get_health_score(
             end=end,
         )
     )
+
+
+########################################################################################
+# Other
+########################################################################################
+
+monitoring = APIRouter(prefix="", tags=["Monitoring"])
+
+
+@monitoring.get("/health")
+async def health() -> None:
+    return None

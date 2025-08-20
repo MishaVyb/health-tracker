@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from alembic import context
 from app.config import AppSettings
-from app.main import setup_database, setup_logging
+from app.main import setup_logging
 from app.repository.models import Base
 
 config = context.config
@@ -46,7 +46,6 @@ async def run_migrations_async() -> None:
     engine = create_async_engine(
         settings.DATABASE_URL,
         echo=settings.DATABASE_ECHO,
-        echo_pool=settings.DATABASE_ECHO_POOL,
     )
     async with engine.connect() as connection:
         await connection.run_sync(run_migrations)
@@ -58,7 +57,6 @@ def setup() -> None:
     settings = AppSettings()
 
     setup_logging(settings)
-    setup_database(settings)
 
     logger.info("Run alembic migrations. ")
     logger.debug("Settings: %s", settings)

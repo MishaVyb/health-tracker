@@ -7,6 +7,7 @@ from typing import Type
 import fastapi.datastructures
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -72,5 +73,10 @@ class HealthTrackerAPP(FastAPI):
         app.include_router(routes.observations, prefix=settings.API_PREFIX)
         app.include_router(routes.concepts, prefix=settings.API_PREFIX)
         app.include_router(routes.score, prefix=settings.API_PREFIX)
+        app.include_router(routes.monitoring, prefix=settings.API_PREFIX)
+
+        @app.get("/", include_in_schema=False)
+        async def root() -> RedirectResponse:
+            return RedirectResponse(url=settings.API_DOCS_URL)
 
         return app
