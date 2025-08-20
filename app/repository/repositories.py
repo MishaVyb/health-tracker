@@ -82,6 +82,7 @@ class ObservationRepo(
 
     @dataclass(kw_only=True)
     class SelectContext(SQLAlchemyRepositoryBase.SelectContext):
+        filters_schema: schemas.ObservationFilters | None = None
         loading_options: tuple[ORMOption, ...] = (
             selectinload(models.Observation.subject),
             selectinload(models.Observation.code).selectinload(
@@ -91,6 +92,22 @@ class ObservationRepo(
                 models.CodeableConcept.coding
             ),
         )
+
+    def _apply_filters(self, stm: Select, *, ctx: SelectContext) -> Select:
+        if ctx.filters_schema:
+            if ctx.filters_schema.subject_ids:
+                stm = stm.filter(
+                    self._model.subject_id.in_(ctx.filters_schema.subject_ids)
+                )
+            if ctx.filters_schema.start:
+                stm = stm.filter(
+                    self._model.effective_datetime_start >= ctx.filters_schema.start
+                )
+            if ctx.filters_schema.end:
+                stm = stm.filter(
+                    self._model.effective_datetime_end <= ctx.filters_schema.end
+                )
+        return super()._apply_filters(stm, ctx=ctx)
 
 
 class CodeableConceptToCodeRepo(

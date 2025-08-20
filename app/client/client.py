@@ -1,6 +1,9 @@
 from http import HTTPMethod
 from uuid import UUID
 
+from fhir.resources.diagnosticreport import DiagnosticReport
+from pydantic import AwareDatetime
+
 from app.client.base import HTTPAdapterBase
 from app.schemas import schemas
 
@@ -146,3 +149,17 @@ class HealthTrackerAdapter(HTTPAdapterBase):
 
     async def delete_codeable_concept(self, id: UUID) -> None:
         return await self._call_service(HTTPMethod.DELETE, f"/codeable-concepts/{id}")
+
+    ########################################################################################
+    # Health Score
+    ########################################################################################
+
+    async def get_health_score(
+        self, patient_id: UUID, start: AwareDatetime, end: AwareDatetime
+    ) -> DiagnosticReport:
+        return await self._call_service(
+            HTTPMethod.GET,
+            f"/health-score/{patient_id}",
+            params=schemas.ObservationFilters(start=start, end=end),
+            response_schema=DiagnosticReport,
+        )

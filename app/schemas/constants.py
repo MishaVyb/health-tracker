@@ -52,3 +52,22 @@ SLEEP_ACTIVITY_CONCEPT = schemas.CodeableConcept(
         ),
     ],
 )
+
+# Health Score DiagnosticReport Coding Constants
+HEALTH_SCORE_PANEL_CODING = schemas.Coding(
+    system="http://loinc.org",
+    code="LP29693-3",
+    display="Health score panel",
+)
+
+HEALTH_ASSESSMENT_CODING = schemas.Coding(
+    system="http://snomed.info/sct",
+    code="386725007",
+    display="Health assessment",
+)
+
+LABORATORY_CATEGORY_CODING = schemas.Coding(
+    system="http://terminology.hl7.org/CodeSystem/v2-0074",
+    code="LAB",
+    display="Laboratory",
+)

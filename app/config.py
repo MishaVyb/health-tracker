@@ -57,18 +57,11 @@ class AppSettings(BaseSettings):
     def API_DOCS_URL(self) -> str:
         return f"{self.API_PREFIX}/docs"
 
+    SERVICE_SCORE_WEIGHT_OBSERVATION_COVERAGE: float = 0.25
+    SERVICE_SCORE_WEIGHT_VALUE_QUALITY: float = 0.35
+    SERVICE_SCORE_WEIGHT_CONS: float = 0.20
+
     HTTP_SESSION_TIMEOUT: float = 59.0  # seconds
-
-    SENTRY_DSN: SecretStr | None = None
-    SENTRY_ENVIRONMENT: Literal["dev", "staging", "production"] = "dev"
-    SENTRY_TRACING: bool = False
-    SENTRY_CA_CERTS: str | None = None
-
-    @property
-    def SENTRY_RELEASE(self) -> str:
-        return (
-            f"{self.APP_NAME}@{self.APP_VERSION}" if self.APP_VERSION else self.APP_NAME
-        )
 
     DATABASE_DRIVER: AsyncDatabaseDriver
     DATABASE_USER: SecretStr

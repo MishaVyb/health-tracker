@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import uuid
 from enum import StrEnum
+from typing import Annotated
 
-from pydantic import AwareDatetime
+from pydantic import AwareDatetime, Field
 
 from .base import (
     BaseSchema,
@@ -66,10 +67,14 @@ class PatientUpdate(UpdateSchemaBase, Patient):
 # CodeableConcept Schemas
 ########################################################################################
 
+CodeType = Annotated[
+    str,
+    Field(min_length=1, max_length=100, description="Unique code."),
+]
+
 
 class Coding(BaseSchema):
-    code: str
-    """Unique code."""
+    code: CodeType
     system: str
     display: str | None = None
 
@@ -104,14 +109,14 @@ class CodeableConceptUpdate(UpdateSchemaBase, CodeableConcept):
 ########################################################################################
 
 
-class ObservationStatus(StrEnum):
+class Status(StrEnum):
     FINAL = "final"
     PRELIMINARY = "preliminary"
     AMENDED = "amended"
 
 
 class Observation(BaseSchema):
-    status: ObservationStatus
+    status: Status
 
     effective_datetime_start: AwareDatetime
     effective_datetime_end: AwareDatetime
@@ -141,7 +146,7 @@ class ObservationCreate(CreateSchemaBase, Observation):
 
 
 class ObservationUpdate(UpdateSchemaBase, Observation):
-    status: ObservationStatus | None = None
+    status: Status | None = None
 
     effective_datetime_start: AwareDatetime | None = None
     effective_datetime_end: AwareDatetime | None = None
@@ -150,3 +155,42 @@ class ObservationUpdate(UpdateSchemaBase, Observation):
     code_id: uuid.UUID | None = None
     subject_id: uuid.UUID | None = None
     category_ids: list[uuid.UUID] | None = None
+
+
+class ObservationFilters(BaseSchema):
+    subject_ids: list[uuid.UUID] = []
+    start: AwareDatetime | None = None
+    end: AwareDatetime | None = None
+
+
+########################################################################################
+# Health Score Schemas
+########################################################################################
+
+
+class PopulationStatistics(BaseSchema):
+    code: CodeType
+    mean: float
+    std: float
+    min: float
+    max: float
+    count: int
+
+
+PopulationStatisticsMap = dict[CodeType, PopulationStatistics]
+
+
+class ValueScore(BaseSchema):
+    """Score for a specific observation type."""
+
+    code: str
+    patient_avg: float
+    population_avg: float
+    score: float
+
+
+class PatientMetrics(BaseSchema):
+    observation_count: int
+    observation_codes: list[CodeType]
+    value_scores: list[ValueScore]
+    consistency_score: float

@@ -1,10 +1,13 @@
 import uuid
 
 import pytest
+from dirty_equals import IsFloat
+from pytest_mock import MockerFixture
 
 from app.client.client import HealthTrackerAdapter
 from app.dependencies.exceptions import HTTPBadRequestError, HTTPNotFoundError
 from app.schemas import schemas
+from app.services.service import HealthTrackerService
 from tests.conftest import TEST_DT
 
 
@@ -90,7 +93,7 @@ async def test_observation_crud(
     code = codeable_concepts[0]
     categories = codeable_concepts[1:]
     create_payload = schemas.ObservationCreate(
-        status=schemas.ObservationStatus.PRELIMINARY,
+        status=schemas.Status.PRELIMINARY,
         effective_datetime_start=TEST_DT,
         effective_datetime_end=TEST_DT,
         issued=TEST_DT,
@@ -120,7 +123,7 @@ async def test_observation_crud(
     code = codeable_concepts[1]  # update codeable concept relationship
     categories = codeable_concepts[2:]  # update codeable concept relationship
     update_payload = schemas.ObservationUpdate(
-        status=schemas.ObservationStatus.FINAL,
+        status=schemas.Status.FINAL,
         value_quantity=200,
         code_id=code.id,
         category_ids=[c.id for c in categories],
@@ -153,3 +156,76 @@ async def test_observation_crud(
     with pytest.raises(HTTPNotFoundError):
         assert await client.get_observation(result.id)
     assert (await client.get_observations()).items == []
+
+
+@pytest.mark.usefixtures("init_concepts")
+async def test_get_health_score(
+    client: HealthTrackerAdapter, patient: schemas.PatientRead, mocker: MockerFixture
+) -> None:
+    """Test the health score endpoint."""
+    METRICS_NUM = 3
+    PATIENTS_NUM = 4
+
+    # check 400/404 errors:
+    with pytest.raises(HTTPBadRequestError):
+        # no observations
+        await client.get_health_score(patient.id, start=TEST_DT, end=TEST_DT)
+    with pytest.raises(HTTPNotFoundError):
+        # no patient
+        await client.get_health_score(uuid.uuid4(), start=TEST_DT, end=TEST_DT)
+
+    # create other patients
+    other_patients = [
+        await client.create_patient(
+            schemas.PatientCreate(
+                name=[schemas.HumanName(family=f"OTHER_FAMILY_{i}")],
+                gender=schemas.HumanGender.FEMALE,
+            )
+        )
+        for i in range(PATIENTS_NUM - 1)  # -1 because already has one patient
+    ]
+
+    # create some observations for the patient
+    codeable_concepts = (await client.get_codeable_concepts()).items
+
+    # Create multiple observations for the patient
+    for target in [patient, *other_patients]:
+        for code in codeable_concepts:
+            for i in range(METRICS_NUM):
+                create_payload = schemas.ObservationCreate(
+                    status=schemas.Status.FINAL,
+                    effective_datetime_start=TEST_DT,
+                    effective_datetime_end=TEST_DT,
+                    issued=TEST_DT,
+                    value_quantity=100 + i * 10,  # different values for variety
+                    value_quantity_unit="mg/dL",
+                    subject_id=target.id,
+                    code_id=code.id,
+                )
+                await client.create_observation(create_payload)
+
+    calculate_statistics = mocker.spy(HealthTrackerService, "_calculate_statistics")
+    calculate_metrics = mocker.spy(HealthTrackerService, "_calculate_metrics")
+    calculate_score = mocker.spy(HealthTrackerService, "_calculate_score")
+
+    result = await client.get_health_score(patient.id, start=TEST_DT, end=TEST_DT)
+    assert result.get_resource_type() == "DiagnosticReport"
+
+    assert result.conclusion
+    assert "Health Score:" in result.conclusion
+
+    stats: schemas.PopulationStatisticsMap = calculate_statistics.spy_return
+    code_type = codeable_concepts[0].coding[0].code
+    assert stats[code_type].mean == 110
+    assert stats[code_type].std == IsFloat(approx=8, delta=1)
+    assert stats[code_type].min == 100
+    assert stats[code_type].max == 120
+    assert stats[code_type].count == METRICS_NUM * PATIENTS_NUM
+
+    metrics: schemas.PatientMetrics = calculate_metrics.spy_return
+    assert metrics.observation_count == METRICS_NUM * len(codeable_concepts)
+
+    score: float = calculate_score.spy_return
+    assert score == IsFloat(gt=60, lt=70)
+
+    print(result.conclusion)

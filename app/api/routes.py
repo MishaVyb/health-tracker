@@ -1,6 +1,9 @@
+from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
+from fhir.resources.diagnosticreport import DiagnosticReport
+from pydantic import AwareDatetime
 from starlette import status
 
 from app.repository.repositories import DatabaseRepositoriesDepends
@@ -56,8 +59,28 @@ observations = APIRouter(prefix="/observations", tags=["Observations"])
 @observations.get("")
 async def get_observations(
     service: HealthTrackerServiceDepends,
+    *,
+    subject_ids: Annotated[
+        list[UUID] | None,
+        Query(description="List of patient IDs to filter observations by"),
+    ] = None,
+    start: Annotated[
+        AwareDatetime | None,
+        Query(description="Start date of the observation period"),
+    ] = None,
+    end: Annotated[
+        AwareDatetime | None,
+        Query(description="End date of the observation period"),
+    ] = None,
 ) -> schemas.GetObservationsResponse:
-    return schemas.GetObservationsResponse(items=await service.get_observations())
+    filters = schemas.ObservationFilters(
+        subject_ids=subject_ids or [],
+        start=start,
+        end=end,
+    )
+    return schemas.GetObservationsResponse(
+        items=await service.get_observations(filters)
+    )
 
 
 @observations.get("/{pk}")
@@ -134,3 +157,41 @@ async def delete_codeable_concept(
     service: HealthTrackerServiceDepends, *, pk: UUID
 ) -> None:
     await service.delete_codeable_concept(pk)
+
+
+########################################################################################
+# Health Score
+########################################################################################
+
+score = APIRouter(prefix="/health-score", tags=["Health Score"])
+
+
+@score.get("/{patient_id}")
+async def get_health_score(
+    service: HealthTrackerServiceDepends,
+    *,
+    patient_id: UUID,
+    start: Annotated[
+        AwareDatetime, Query(description="Start date of the observation period")
+    ],
+    end: Annotated[
+        AwareDatetime, Query(description="End date of the observation period")
+    ],
+) -> DiagnosticReport:
+    """
+    Calculate and return a health score for a patient.
+
+    The health score is calculated based on:
+    - Number and variety of health observations
+    - Comparison to population averages
+    - Data consistency
+
+    Returns a FHIR-compliant DiagnosticReport.
+    """
+    return await service.get_health_score(
+        schemas.ObservationFilters(
+            subject_ids=[patient_id],
+            start=start,
+            end=end,
+        )
+    )

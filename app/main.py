@@ -3,10 +3,7 @@ import logging.config
 import os
 
 import click
-import sentry_sdk
 import uvicorn
-from sentry_sdk.integrations.fastapi import FastApiIntegration
-from sentry_sdk.integrations.starlette import StarletteIntegration
 
 from app.app import HealthTrackerAPP
 from app.config import AppSettings
@@ -20,27 +17,9 @@ def setup_logging(settings: AppSettings) -> None:
     logging.config.dictConfig(settings.LOGGING)
 
 
-def setup_sentry(settings: AppSettings) -> None:
-    if settings.SENTRY_DSN:
-        logger.info("Setup Sentry. Environment: %s", settings.SENTRY_ENVIRONMENT)
-        sentry_sdk.init(
-            dsn=settings.SENTRY_DSN.get_secret_value(),
-            ca_certs=settings.SENTRY_CA_CERTS,
-            release=settings.SENTRY_RELEASE,
-            environment=settings.SENTRY_ENVIRONMENT,
-            enable_tracing=settings.SENTRY_TRACING,
-            attach_stacktrace=True,
-            integrations=[StarletteIntegration(), FastApiIntegration()],
-        )
-
-
 def setup(settings: AppSettings | None = None) -> HealthTrackerAPP:
     settings = settings or AppSettings()
-
-    # call for setup for each worker process
     setup_logging(settings)
-    setup_sentry(settings)
-
     logger.info("Run app worker [%s]", click.style(os.getpid(), fg="cyan"))
     return HealthTrackerAPP.startup(settings)
 

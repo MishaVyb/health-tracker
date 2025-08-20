@@ -71,5 +71,6 @@ class HealthTrackerAPP(FastAPI):
         app.include_router(routes.patients, prefix=settings.API_PREFIX)
         app.include_router(routes.observations, prefix=settings.API_PREFIX)
         app.include_router(routes.concepts, prefix=settings.API_PREFIX)
+        app.include_router(routes.score, prefix=settings.API_PREFIX)
 
         return app
