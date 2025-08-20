@@ -1,6 +1,3 @@
-# docker compose is only for local development reference
-# shows the structure that is translated to AWS services by terraform
-
 services:
   db:
     image: postgres:15
@@ -12,7 +9,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: always
     healthcheck:
-      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      test: pg_isready -U postgres -d health_tracker_db
       interval: 2s
       timeout: 3s
       retries: 40
@@ -34,8 +31,6 @@ services:
     build: .
     ports:
       - "8000:8000"
-    volumes:
-      - ./app:/app
     restart: always
     environment:
       HEALTH_TRACKER_DATABASE_HOST: db
