@@ -60,6 +60,14 @@ observations = APIRouter(prefix="/observations", tags=["Observations"])
 async def get_observations(
     service: HealthTrackerServiceDepends,
     *,
+    kinds: Annotated[  # TODO
+        list[schemas.CodeKind] | None,
+        Query(description="List of observation kinds to filter observations by"),
+    ] = None,
+    code_ids: Annotated[  # TODO
+        list[UUID] | None,
+        Query(description="List of code IDs to filter observations by"),
+    ] = None,
     subject_ids: Annotated[
         list[UUID] | None,
         Query(description="List of patient IDs to filter observations by"),

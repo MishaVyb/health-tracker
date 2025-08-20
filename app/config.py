@@ -57,9 +57,10 @@ class AppSettings(BaseSettings):
     def API_DOCS_URL(self) -> str:
         return f"{self.API_PREFIX}/docs"
 
-    SERVICE_SCORE_WEIGHT_OBSERVATION_COVERAGE: float = 0.25
-    SERVICE_SCORE_WEIGHT_VALUE_QUALITY: float = 0.35
-    SERVICE_SCORE_WEIGHT_CONS: float = 0.20
+    SERVICE_SCORE_COVERAGE_WEIGHT: float = 0.25
+    SERVICE_SCORE_COVERAGE_FACTOR: float = 0.25
+    SERVICE_SCORE_VALUE_QUALITY_WEIGHT: float = 0.35
+    SERVICE_SCORE_Z_SCALING_FACTOR: float = 20.0
 
     HTTP_SESSION_TIMEOUT: float = 59.0  # seconds
 

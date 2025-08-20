@@ -24,9 +24,6 @@ class BaseSchema(BaseModel):
             if k in self.model_fields_set and self.model_fields[k].repr:
                 yield (k, v)
 
-    def __str__(self) -> str:
-        return repr(self)
-
 
 class ReadSchemaBase(BaseSchema):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)

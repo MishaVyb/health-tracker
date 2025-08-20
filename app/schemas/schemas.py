@@ -67,9 +67,23 @@ class PatientUpdate(UpdateSchemaBase, Patient):
 # CodeableConcept Schemas
 ########################################################################################
 
+
+class CodeKind(StrEnum):
+    """Verbose name for a code identifier."""
+
+    SLEEP_ACTIVITY = "sleep_activity"
+    PHYSICAL_ACTIVITY = "physical_activity"
+    BLOOD_TEST = "blood_test"
+
+
 CodeType = Annotated[
     str,
-    Field(min_length=1, max_length=100, description="Unique code."),
+    Field(
+        min_length=1,
+        max_length=100,
+        description="Unique code.",
+        examples=["4596-3", "29463-7"],
+    ),
 ]
 
 
@@ -77,6 +91,12 @@ class Coding(BaseSchema):
     code: CodeType
     system: str
     display: str | None = None
+
+    def __str__(self) -> str:
+        return f"{self.code} ({self.display})"
+
+    def __hash__(self) -> int:
+        return hash(self.code)
 
 
 class CodingRead(ReadSchemaBase, Coding):
@@ -168,29 +188,37 @@ class ObservationFilters(BaseSchema):
 ########################################################################################
 
 
-class PopulationStatistics(BaseSchema):
-    code: CodeType
+class ObservationQuantityStat(BaseSchema):
+    """Statistics for an specific observation type."""
+
     mean: float
-    std: float
+    """Average value for the observation type."""
+    stdev: float
+    """Standard deviation of the observation type."""
     min: float
+    """Minimum value for the observation type."""
     max: float
+    """Maximum value for the observation type."""
     count: int
+    """Number of observations for the observation type."""
 
 
-PopulationStatisticsMap = dict[CodeType, PopulationStatistics]
+class PatientScoreStat(BaseSchema):
+    coding: Coding
+
+    population_stats: ObservationQuantityStat
+    patient_stats: ObservationQuantityStat
+    patient_score: Annotated[float, Field(ge=0, le=100)]
+    """Patient score for this observation type."""
+
+    def __str__(self) -> str:
+        return f"{self.coding}: {self.patient_score} ({self.patient_stats} / {self.population_stats})"
 
 
-class ValueScore(BaseSchema):
-    """Score for a specific observation type."""
-
-    code: str
-    patient_avg: float
-    population_avg: float
-    score: float
+ObservationQuantityStatMap = dict[Coding, ObservationQuantityStat]
 
 
 class PatientMetrics(BaseSchema):
     observation_count: int
-    observation_codes: list[CodeType]
-    value_scores: list[ValueScore]
-    consistency_score: float
+    observation_codes: list[Coding]
+    observation_scores: list[PatientScoreStat]

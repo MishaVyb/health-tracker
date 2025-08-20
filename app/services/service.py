@@ -159,134 +159,120 @@ class HealthTrackerService:
         self, filters: schemas.ObservationFilters
     ) -> DiagnosticReport:
         patient = await self.get_patient(filters.subject_ids[0])
-        patient_observations = await self.get_observations(filters)
-        if not patient_observations:
+        patient_obs = await self.get_observations(filters)
+        if not patient_obs:
             raise HTTPBadRequestError(
                 detail=f"No observations found for patient {filters.subject_ids}"
             )
 
-        other_observations = await self.db.observations.get_where(
-            clauses=(
-                (models.Observation.id.notin_(o.id for o in patient_observations)),
-            )
+        other_obs = await self.db.observations.get_where(
+            clauses=((models.Observation.id.notin_(o.id for o in patient_obs)),)
         )
 
         self.logger.info(
             "Calculating health score depending on %s observations. "
             "Considering %s other observations as population statistics.",
-            len(patient_observations),
-            len(other_observations),
+            len(patient_obs),
+            len(other_obs),
         )
 
-        stats = self._calculate_statistics(patient_observations + other_observations)
-        patient_metrics = self._calculate_metrics(patient_observations, stats)
-        patient_score = self._calculate_score(patient_metrics)
+        patient_stats = self._calculate_statistics_per_coding(patient_obs)
+        all_stats = self._calculate_statistics_per_coding(patient_obs + other_obs)
 
-        # Create FHIR DiagnosticReport structure
+        patient_metrics = self._calculate_metrics_per_coding(
+            patient_obs, patient_stats, all_stats
+        )
+        patient_score = self._calculate_total_score(patient_metrics)
+
         diagnostic_report = self._construct_report(
-            filters, patient, patient_score, patient_metrics, patient_observations
+            filters, patient, patient_metrics, patient_obs, patient_score
         )
 
         return diagnostic_report
 
-    def _prepare_observations_values(
+    def _prepare_observations_per_coding(
         self, observations: list[schemas.ObservationRead]
-    ) -> dict[schemas.CodeType, list[float]]:
-        res: dict[schemas.CodeType, list[float]] = defaultdict(list)
+    ) -> dict[schemas.Coding, list[float]]:
+        res: dict[schemas.Coding, list[float]] = defaultdict(list)
         for obs in observations:
             for coding in obs.code.coding:
-                res[coding.code].append(obs.value_quantity)
+                res[coding].append(obs.value_quantity)
         return res
 
-    def _calculate_statistics(
+    def _calculate_statistics_per_coding(
         self, observations: list[schemas.ObservationRead]
-    ) -> schemas.PopulationStatisticsMap:
-        """Calculate population statistics for a list of observations."""
+    ) -> schemas.ObservationQuantityStatMap:
+        """Calculate statistics for a list of observations."""
 
-        res: schemas.PopulationStatisticsMap = {}
-        observations_per_code = self._prepare_observations_values(observations)
+        res: schemas.ObservationQuantityStatMap = {}
+        observations_per_code = self._prepare_observations_per_coding(observations)
         for code, values in observations_per_code.items():
             if len(values) > 1:
-                res[code] = schemas.PopulationStatistics(
-                    code=code,
-                    mean=mean(values),
-                    std=stdev(values),
-                    min=min(values),
-                    max=max(values),
+                res[code] = schemas.ObservationQuantityStat(
+                    mean=round(mean(values), 4),  # average value
+                    stdev=round(stdev(values), 4),  # standard deviation
+                    min=round(min(values), 4),
+                    max=round(max(values), 4),
                     count=len(values),
                 )
 
-        return res
-
-    def _calculate_metrics(
-        self,
-        observations: list[schemas.ObservationRead],
-        stats: schemas.PopulationStatisticsMap,
-    ) -> schemas.PatientMetrics:
-        """Calculate metrics for a patient depending on their observations and population statistics."""
-
-        # Calculate value scores for each observation type
-        value_scores: dict[schemas.CodeType, schemas.ValueScore] = {}
-        observations_per_code = self._prepare_observations_values(observations)
-        for code, values in observations_per_code.items():
-            if pop_stats := stats.get(code):
-                avg_value = pop_stats.mean
-
-                # Calculate z-score (how many standard deviations from mean)
-                z_score = abs((avg_value - pop_stats.mean) / pop_stats.std)
-                # Convert to a 0-100 score (lower z-score = better score)
-                value_score = max(0, 100 - (z_score * 20))
-
-                value_scores[code] = schemas.ValueScore(
-                    code=code,
-                    patient_avg=avg_value,
-                    population_avg=pop_stats.mean,
-                    score=value_score,
+            else:
+                self.logger.warning(
+                    "Not enough observations to calculate statistics for %s", code
                 )
 
-        # Calculate consistency score (how consistent the patient's values are)
-        values = [obs.value_quantity for obs in observations]
+        return res
 
-        # Lower coefficient of variation = more consistent
-        cv = stdev(values) / mean(values)  # ??? zero division
-        consistency_score = max(0, 100 - (cv * 50))
+    def _calculate_metrics_per_coding(
+        self,
+        observations: list[schemas.ObservationRead],
+        patient_stats: schemas.ObservationQuantityStatMap,
+        population_stats: schemas.ObservationQuantityStatMap,
+    ) -> schemas.PatientMetrics:
+        """
+        Calculate patient metrics depending on their observations and population
+        statistics for each observation type separately.
+        """
+
+        scores: dict[schemas.Coding, schemas.PatientScoreStat] = {}
+        for coding, population_stat in population_stats.items():
+            if not (patient_stat := patient_stats.get(coding)):
+                self.logger.warning("No patient statistics found for coding %s", coding)
+                continue
+
+            # calculate z-score (how many standard deviations from population mean)
+            z_score = abs(
+                (patient_stat.mean - population_stat.mean) / population_stat.stdev
+            )
+            # convert to a 0-100 score (lower z-score = better score)
+            patient_score = max(
+                0, 100 - (z_score * self.settings.SERVICE_SCORE_Z_SCALING_FACTOR)
+            )
+
+            scores[coding] = schemas.PatientScoreStat(
+                coding=coding,
+                patient_stats=patient_stat,
+                population_stats=population_stat,
+                patient_score=patient_score,
+            )
 
         return schemas.PatientMetrics(
             observation_count=len(observations),
-            observation_codes=list(observations_per_code.keys()),
-            value_scores=list(value_scores.values()),
-            consistency_score=consistency_score,
+            observation_codes=list(scores.keys()),
+            observation_scores=list(scores.values()),
         )
 
-    def _calculate_score(self, metrics: schemas.PatientMetrics) -> float:
-        """
-        Calculate overall health score from individual metrics. Considering:
-        - observation coverage
-        - value quality
-        - consistency
-        """
-        res = 0
-
-        # Observation coverage score (0-100)
-        score = min(100, len(metrics.observation_codes) * 20)
-        res += score * self.settings.SERVICE_SCORE_WEIGHT_OBSERVATION_COVERAGE
-
-        # Value quality score (average of individual value scores)
-        if metrics.value_scores:
-            score = mean(score.score for score in metrics.value_scores)
-            res += score * self.settings.SERVICE_SCORE_WEIGHT_VALUE_QUALITY
-
-        # Consistency score (already 0-100)
-        res += metrics.consistency_score * self.settings.SERVICE_SCORE_WEIGHT_CONS
-
-        return round(res, 2)
+    def _calculate_total_score(self, metrics: schemas.PatientMetrics) -> float:
+        """Calculate overall health score from individual metrics."""
+        res = mean(score.patient_score for score in metrics.observation_scores)
+        return round(res, 4)
 
     def _compose_conclusion(
         self,
         filters: schemas.ObservationFilters,
         patient: schemas.PatientRead,
-        health_score: float,
         metrics: schemas.PatientMetrics,
+        total_score: float,
     ) -> str:
         """Compose human-readable conclusion."""
 
@@ -297,30 +283,27 @@ class HealthTrackerService:
             1: "Limited health data quality, recommend increase activity.",  # 20-39
             0: "Inappropriate health score, instant actions are required.",  # 0-19
         }
-        overall_assessment = assignments_map[int(health_score // 20)]
-
-        return f"""
-            Patient: {patient}
-            Period: {filters.start} - {filters.end}
-
-            Patient has {metrics.observation_count} total observations across {len(metrics.observation_codes)} different health metrics.
-            Health Score: {health_score}/100
-            Value scores: {metrics.value_scores}
-            Consistency score: {metrics.consistency_score}/100
-
-            Overall Assessment: {overall_assessment}
-        """
+        assessment = assignments_map[int((total_score - 1) // 20)]
+        scores = "\n".join(map(str, metrics.observation_scores[:10]))
+        return (
+            f"Patient: {patient}\n"
+            f"Period: {filters.start} - {filters.end}\n"
+            f"Patient has {metrics.observation_count} total observations across {len(metrics.observation_codes)} different health metrics.\n"
+            f"Health Score: {total_score}/100\n"
+            f"Value scores per observation code (first 10): \n{scores}\n"
+            f"Overall Assessment: {assessment}"
+        )
 
     def _construct_report(
         self,
         filters: schemas.ObservationFilters,
         patient: schemas.PatientRead,
-        health_score: float,
         metrics: schemas.PatientMetrics,
         observations: list[schemas.ObservationRead],
+        total_score: float,
     ) -> DiagnosticReport:
         """Create a FHIR-compliant DiagnosticReport structure."""
-        conclusion = self._compose_conclusion(filters, patient, health_score, metrics)
+        conclusion = self._compose_conclusion(filters, patient, metrics, total_score)
 
         diagnostic_report = DiagnosticReport(
             id=f"health-score-{filters.subject_ids[0]}",
