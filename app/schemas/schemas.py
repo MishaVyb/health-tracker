@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
 from enum import StrEnum
+
+from pydantic import AwareDatetime
 
 from .base import (
     BaseSchema,
@@ -12,43 +13,52 @@ from .base import (
     UpdateSchemaBase,
 )
 
-
-class ObservationStatus(StrEnum):
-    FINAL = "final"
-    PRELIMINARY = "preliminary"
-    AMENDED = "amended"
+########################################################################################
+# Patient Schemas
+########################################################################################
 
 
-class Gender(StrEnum):
+class HumanNameUse(StrEnum):
+    USUAL = "usual"
+    OFFICIAL = "official"
+    TEMP = "temp"
+    NICKNAME = "nickname"
+    ANONYMOUS = "anonymous"
+    OLD = "old"
+    MAIDEN = "maiden"
+
+
+class HumanName(BaseSchema):
+    use: HumanNameUse | None = None
+    family: str | None = None
+    given: list[str] | None = None
+
+
+class HumanGender(StrEnum):
     MALE = "male"
     FEMALE = "female"
     OTHER = "other"
     UNKNOWN = "unknown"
 
 
-########################################################################################
-# Patient Schemas
-########################################################################################
+class Patient(BaseSchema):
+    name: list[HumanName] = []
+    gender: HumanGender | None = None
 
 
-class PatientBase(BaseSchema):
-    name: list[dict] = []
-    gender: Gender | None = None
-
-
-class Patient(ReadSchemaBase, PatientBase):
+class PatientRead(ReadSchemaBase, Patient):
     pass
 
 
-class GetPatientsResponse(ItemsResponseBase[Patient]):
+class GetPatientsResponse(ItemsResponseBase[PatientRead]):
     pass
 
 
-class PatientCreate(CreateSchemaBase, PatientBase):
+class PatientCreate(CreateSchemaBase, Patient):
     pass
 
 
-class PatientUpdate(UpdateSchemaBase, PatientBase):
+class PatientUpdate(UpdateSchemaBase, Patient):
     pass
 
 
@@ -57,24 +67,35 @@ class PatientUpdate(UpdateSchemaBase, PatientBase):
 ########################################################################################
 
 
-class CodeableConceptBase(BaseSchema):
+class Coding(BaseSchema):
+    code: str
+    """Unique code."""
+    system: str
+    display: str | None = None
+
+
+class CodingRead(ReadSchemaBase, Coding):
+    pass
+
+
+class CodeableConcept(BaseSchema):
     text: str
-    code: list[dict] = []
+    coding: list[Coding] = []
 
 
-class CodeableConcept(ReadSchemaBase, CodeableConceptBase):
+class CodeableConceptRead(ReadSchemaBase, CodeableConcept):
+    coding: list[CodingRead] = []
+
+
+class GetCodeableConceptsResponse(ItemsResponseBase[CodeableConceptRead]):
     pass
 
 
-class GetCodeableConceptsResponse(ItemsResponseBase[CodeableConcept]):
+class CodeableConceptCreate(CreateSchemaBase, CodeableConcept):
     pass
 
 
-class CodeableConceptCreate(CreateSchemaBase, CodeableConceptBase):
-    pass
-
-
-class CodeableConceptUpdate(UpdateSchemaBase, CodeableConceptBase):
+class CodeableConceptUpdate(UpdateSchemaBase, CodeableConcept):
     text: str | None = None
 
 
@@ -83,35 +104,43 @@ class CodeableConceptUpdate(UpdateSchemaBase, CodeableConceptBase):
 ########################################################################################
 
 
-class ObservationBase(BaseSchema):
+class ObservationStatus(StrEnum):
+    FINAL = "final"
+    PRELIMINARY = "preliminary"
+    AMENDED = "amended"
+
+
+class Observation(BaseSchema):
     status: ObservationStatus
-    effective_datetime_start: datetime
-    effective_datetime_end: datetime
-    issued: datetime | None = None
+    effective_datetime_start: AwareDatetime
+    effective_datetime_end: AwareDatetime
+    issued: AwareDatetime | None = None
 
 
-class Observation(ReadSchemaBase, ObservationBase):
-    category: list[CodeableConcept] = []
-    code: CodeableConcept
-    subject: Patient
+class ObservationRead(ReadSchemaBase, Observation):
+    category: list[CodeableConceptRead] = []
+    code: CodeableConceptRead
+    subject: PatientRead
 
 
-class GetObservationsResponse(ItemsResponseBase[Observation]):
+class GetObservationsResponse(ItemsResponseBase[ObservationRead]):
     pass
 
 
-class ObservationCreate(CreateSchemaBase, ObservationBase):
-    # foreign key references for creation:
-    code_id: uuid.UUID
+class ObservationCreate(CreateSchemaBase, Observation):
     subject_id: uuid.UUID
+    """Foreign key reference to the Patient id."""
+    code_id: uuid.UUID
+    """Foreign key reference to the CodeableConcept id."""
     category_ids: list[uuid.UUID] = []
+    """Foreign key references to the CodeableConcept ids."""
 
 
-class ObservationUpdate(UpdateSchemaBase, ObservationBase):
+class ObservationUpdate(UpdateSchemaBase, Observation):
     status: ObservationStatus | None = None
-    effective_datetime_start: datetime | None = None
-    effective_datetime_end: datetime | None = None
-    issued: datetime | None = None
+    effective_datetime_start: AwareDatetime | None = None
+    effective_datetime_end: AwareDatetime | None = None
+    issued: AwareDatetime | None = None
     code_id: uuid.UUID | None = None
     subject_id: uuid.UUID | None = None
     category_ids: list[uuid.UUID] | None = None

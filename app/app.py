@@ -14,9 +14,10 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from .api import routes
-from .config import AppSettings
-from .dependencies.logging import LoggerMiddleware
+from app.api import routes
+from app.config import AppSettings
+from app.dependencies.exceptions import ServiceExceptionDepends
+from app.dependencies.logging import LoggerMiddleware
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,7 @@ class HealthTrackerAPP(FastAPI):
             generate_unique_id_function=lambda route: route.name,
             lifespan=lifespan,
             redirect_slashes=False,
+            dependencies=[ServiceExceptionDepends()],
         )
         app.state.settings = settings
 
@@ -66,8 +68,8 @@ class HealthTrackerAPP(FastAPI):
             allow_headers=["*"],
         )
 
-        app.include_router(routes.patients)
-        app.include_router(routes.observations)
-        app.include_router(routes.concepts)
+        app.include_router(routes.patients, prefix=settings.API_PREFIX)
+        app.include_router(routes.observations, prefix=settings.API_PREFIX)
+        app.include_router(routes.concepts, prefix=settings.API_PREFIX)
 
         return app

@@ -36,6 +36,12 @@ dev = [
 testpaths = ["tests"]
 pythonpath = ["."]
 asyncio_mode = "auto"
+addopts = [
+    "--failed-first",
+    "--strict-markers",
+    "--show-capture=no",
+    "--disable-warnings", # ???
+]
 
 [tool.black]
 line-length = 88

@@ -3,51 +3,102 @@ from typing import Annotated, Never
 from uuid import UUID
 
 from fastapi import Depends
+from sqlalchemy.orm import selectinload
+from sqlalchemy.orm.interfaces import ORMOption
 
 from . import models, schemas
 from .base import SQLAlchemyRepositoryBase
 
 
-class PatientRepository(
+class PatientRepo(
     SQLAlchemyRepositoryBase[
         models.Patient,
         UUID,
-        schemas.Patient,
+        schemas.PatientRead,
         schemas.PatientCreate,
         schemas.PatientUpdate,
     ]
 ):
-    model = models.Patient
-    schema = schemas.Patient
+    _model = models.Patient
+    _schema = schemas.PatientRead
 
 
-class ObservationRepository(
+class CodingRepo(
     SQLAlchemyRepositoryBase[
-        models.Observation,
+        models.Coding,
         UUID,
-        schemas.Observation,
-        schemas.ObservationCreate,
-        schemas.ObservationUpdate,
+        schemas.CodingRead,  # read
+        schemas.Coding,  # create
+        Never,  # update
     ]
 ):
-    model = models.Observation
-    schema = schemas.Observation
+    _model = models.Coding
+    _schema = schemas.CodingRead
+
+    async def create_if_not_exists(self, payload: schemas.Coding) -> schemas.CodingRead:
+        if instance := await self.get_one_or_none(code=payload.code):
+            return instance
+        return await self.create(payload)
 
 
-class CodeableConceptRepository(
+class CodeableConceptRepo(
     SQLAlchemyRepositoryBase[
         models.CodeableConcept,
         UUID,
-        schemas.CodeableConcept,
+        schemas.CodeableConceptRead,
         schemas.CodeableConceptCreate,
         schemas.CodeableConceptUpdate,
     ]
 ):
-    model = models.CodeableConcept
-    schema = schemas.CodeableConcept
+    _model = models.CodeableConcept
+    _schema = schemas.CodeableConceptRead
+
+    @dataclass(kw_only=True)
+    class SelectContext(SQLAlchemyRepositoryBase.SelectContext):
+        loading_options: tuple[ORMOption, ...] = (
+            selectinload(models.CodeableConcept.coding),
+        )
 
 
-class ObservationToCodeableConceptRepository(
+class ObservationRepo(
+    SQLAlchemyRepositoryBase[
+        models.Observation,
+        UUID,
+        schemas.ObservationRead,
+        schemas.ObservationCreate,
+        schemas.ObservationUpdate,
+    ]
+):
+    _model = models.Observation
+    _schema = schemas.ObservationRead
+
+    @dataclass(kw_only=True)
+    class SelectContext(SQLAlchemyRepositoryBase.SelectContext):
+        loading_options: tuple[ORMOption, ...] = (
+            selectinload(models.Observation.subject),
+            selectinload(models.Observation.code).selectinload(
+                models.CodeableConcept.coding
+            ),
+            selectinload(models.Observation.category).selectinload(
+                models.CodeableConcept.coding
+            ),
+        )
+
+
+class CodeableConceptToCodeRepo(
+    SQLAlchemyRepositoryBase[
+        models.CodeableConceptToCoding,
+        UUID,
+        Never,
+        Never,
+        Never,
+    ]
+):
+    _model = models.CodeableConceptToCoding
+    _schema = ...
+
+
+class ObservationToCodeableConceptRepo(
     SQLAlchemyRepositoryBase[
         models.CodeableConceptToObservation,
         UUID,
@@ -56,15 +107,19 @@ class ObservationToCodeableConceptRepository(
         Never,
     ]
 ):
-    model = models.CodeableConceptToObservation
-    schema = ...
+    _model = models.CodeableConceptToObservation
+    _schema = ...
 
 
 @dataclass(kw_only=True)
 class DatabaseRepositories:
-    patients: Annotated[PatientRepository, Depends()]
-    observations: Annotated[ObservationRepository, Depends()]
-    codeable_concepts: Annotated[CodeableConceptRepository, Depends()]
+    patients: Annotated[PatientRepo, Depends()]
+    codes: Annotated[CodingRepo, Depends()]
+    concepts: Annotated[CodeableConceptRepo, Depends()]
+    observations: Annotated[ObservationRepo, Depends()]
+
+    concept_to_code: Annotated[CodeableConceptToCodeRepo, Depends()]
+    observation_to_concept: Annotated[ObservationToCodeableConceptRepo, Depends()]
 
     # def __post_init__(self) -> None:
     #     for repo in self.repositories:
@@ -96,7 +151,7 @@ class DatabaseRepositories:
     #             if field.name != "users"
     #         },
     #         # other:
-    #         users=UserRepository(session=session),
+    #         users=UserRepo(session=session),
     #     )
 
     @property

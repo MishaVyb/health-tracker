@@ -19,31 +19,33 @@ class HealthTrackerAdapter(HTTPAdapterBase):
             response_schema=schemas.GetPatientsResponse,
         )
 
-    async def get_patient(self, id: UUID) -> schemas.Patient:
+    async def get_patient(self, id: UUID) -> schemas.PatientRead:
         return await self._call_service(
             HTTPMethod.GET,
             f"/patients/{id}",
-            response_schema=schemas.Patient,
+            response_schema=schemas.PatientRead,
         )
 
-    async def create_patient(self, payload: schemas.PatientCreate) -> schemas.Patient:
+    async def create_patient(
+        self, payload: schemas.PatientCreate
+    ) -> schemas.PatientRead:
         return await self._call_service(
             HTTPMethod.POST,
             "/patients",
             payload=payload,
-            response_schema=schemas.Patient,
+            response_schema=schemas.PatientRead,
         )
 
     async def update_patient(
         self,
         id: UUID,
         payload: schemas.PatientUpdate,
-    ) -> schemas.Patient:
+    ) -> schemas.PatientRead:
         return await self._call_service(
             HTTPMethod.PATCH,
             f"/patients/{id}",
             payload=payload,
-            response_schema=schemas.Patient,
+            response_schema=schemas.PatientRead,
         )
 
     async def delete_patient(self, id: UUID) -> None:
@@ -65,33 +67,33 @@ class HealthTrackerAdapter(HTTPAdapterBase):
             response_schema=schemas.GetObservationsResponse,
         )
 
-    async def get_observation(self, id: UUID) -> schemas.Observation:
+    async def get_observation(self, id: UUID) -> schemas.ObservationRead:
         return await self._call_service(
             HTTPMethod.GET,
             f"/observations/{id}",
-            response_schema=schemas.Observation,
+            response_schema=schemas.ObservationRead,
         )
 
     async def create_observation(
         self, payload: schemas.ObservationCreate
-    ) -> schemas.Observation:
+    ) -> schemas.ObservationRead:
         return await self._call_service(
             HTTPMethod.POST,
             "/observations",
             payload=payload,
-            response_schema=schemas.Observation,
+            response_schema=schemas.ObservationRead,
         )
 
     async def update_observation(
         self,
         id: UUID,
         payload: schemas.ObservationUpdate,
-    ) -> schemas.Observation:
+    ) -> schemas.ObservationRead:
         return await self._call_service(
             HTTPMethod.PATCH,
             f"/observations/{id}",
             payload=payload,
-            response_schema=schemas.Observation,
+            response_schema=schemas.ObservationRead,
         )
 
     async def delete_observation(self, id: UUID) -> None:
@@ -113,33 +115,33 @@ class HealthTrackerAdapter(HTTPAdapterBase):
             response_schema=schemas.GetCodeableConceptsResponse,
         )
 
-    async def get_concept(self, id: UUID) -> schemas.CodeableConcept:
+    async def get_codeable_concept(self, id: UUID) -> schemas.CodeableConceptRead:
         return await self._call_service(
             HTTPMethod.GET,
             f"/codeable-concepts/{id}",
-            response_schema=schemas.CodeableConcept,
+            response_schema=schemas.CodeableConceptRead,
         )
 
     async def create_codeable_concept(
         self, payload: schemas.CodeableConceptCreate
-    ) -> schemas.CodeableConcept:
+    ) -> schemas.CodeableConceptRead:
         return await self._call_service(
             HTTPMethod.POST,
             "/codeable-concepts",
             payload=payload,
-            response_schema=schemas.CodeableConcept,
+            response_schema=schemas.CodeableConceptRead,
         )
 
     async def update_codeable_concept(
         self,
         id: UUID,
         payload: schemas.CodeableConceptUpdate,
-    ) -> schemas.Observation:
+    ) -> schemas.ObservationRead:
         return await self._call_service(
             HTTPMethod.PATCH,
             f"/codeable-concepts/{id}",
             payload=payload,
-            response_schema=schemas.CodeableConcept,
+            response_schema=schemas.CodeableConceptRead,
         )
 
     async def delete_codeable_concept(self, id: UUID) -> None:

@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone
 
 import pytest
 from asgi_lifespan import LifespanManager
@@ -12,6 +13,7 @@ from app.client.client import HealthTrackerAdapter
 from app.config import AppSettings, AsyncDatabaseDriver
 from app.main import setup
 from app.repository.models import Base
+from app.schemas import constants, schemas
 
 logger = logging.getLogger("conftest")
 
@@ -48,7 +50,7 @@ def engine(app: HealthTrackerAPP) -> AsyncEngine:
     return app.state.engine
 
 
-@pytest.fixture()
+@pytest.fixture
 async def setup_tables(engine: AsyncEngine):
     try:
         async with engine.begin() as conn:
@@ -70,8 +72,34 @@ async def setup_tables(engine: AsyncEngine):
 
 
 @pytest.fixture  # ??? rename to adapter
-async def client(app: HealthTrackerAPP):
+async def client(app: HealthTrackerAPP, setup_tables: None):
     async with AsyncClient(
         transport=ASGITransport(app), base_url="http://testserver"
     ) as session:
         yield HealthTrackerAdapter(session)
+
+
+########################################################################################
+# TEST DATA
+########################################################################################
+
+TEST_DT = datetime(
+    year=2025, month=1, day=1, hour=12, minute=0, second=0, tzinfo=timezone.utc
+)
+
+TEST_PATIENT = schemas.PatientCreate(
+    name=[schemas.HumanName(family="TEST_PATIENT_1")],
+    gender=schemas.HumanGender.MALE,
+)
+
+
+@pytest.fixture
+async def patient(client: HealthTrackerAdapter) -> schemas.PatientRead:
+    return await client.create_patient(TEST_PATIENT)
+
+
+@pytest.fixture
+async def init_concepts(client: HealthTrackerAdapter) -> None:
+    await client.create_codeable_concept(constants.BLOOD_PRESSURE_CONCEPT)
+    await client.create_codeable_concept(constants.HEMOGLOBIN_CONCEPT)
+    await client.create_codeable_concept(constants.BLOOD_GLUCOSE_CONCEPT)

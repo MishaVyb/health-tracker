@@ -6,7 +6,7 @@ import httpx
 from fastapi import HTTPException
 from pydantic import BaseModel, TypeAdapter
 
-from app.exceptions import HTTPTimeoutError
+from app.dependencies.exceptions import HTTPNotFoundError, HTTPTimeoutError
 
 _T = TypeVar("_T")
 _TSchema = TypeVar("_TSchema", bound=BaseModel)
@@ -36,7 +36,7 @@ class HTTPAdapterBase:
         if isinstance(url, str):
             url = httpx.URL(url)
         if self._api_prefix:
-            url = url.copy_with(path=f"{self._api_prefix}/{url.path}")
+            url = url.copy_with(path=str(self._api_prefix) + str(url.path))
         if self._base_url and not self._client.base_url:
             url = self._base_url.join(url)
         return url
@@ -151,19 +151,27 @@ class HTTPAdapterBase:
                 data=json,
                 **other_request_kwargs,
             )
+
+        # request timeout:
         except asyncio.TimeoutError:
             raise HTTPTimeoutError(f"HTTP Request timed out: {method} {url}")
+
+        # reraise error with original code:
         except httpx.HTTPStatusError as e:
-            raise HTTPException(
-                status_code=e.response.status_code,  # reraise error with original code
-                detail="HTTP Request failed: bad status code received. "
-                f"{method} {url} {e.response.status_code} {e.response.reason_phrase}",
+            detail = (
+                f"HTTP Request failed: bad status code received. {method} {url} {e}"
             )
+
+            if e.response.status_code == HTTPNotFoundError.status_code:
+                raise HTTPNotFoundError(detail)
+
+            raise HTTPException(status_code=e.response.status_code, detail=detail)
 
         if response_with_content:
             return await self._validate_content(
                 response_schema, content, validation_context
             )
+
         return None
 
     async def _process_request(

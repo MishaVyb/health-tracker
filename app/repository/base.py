@@ -1,11 +1,12 @@
 import time
 from dataclasses import dataclass, field
 from functools import cache
-from typing import Any, ClassVar, Generic, Sequence, Type, TypeAlias, TypeVar, overload
+from typing import Any, ClassVar, Generic, Sequence, Type, TypeAlias, TypeVar
 
 from pydantic import BaseModel as BaseSchema
 from pydantic import TypeAdapter
 from sqlalchemy import ColumnExpressionArgument, Select, select
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.interfaces import ORMOption
 
@@ -24,7 +25,7 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseSchema)
 class SQLAlchemyRepositoryBase(
     Generic[ModelType, PrimaryKeyType, SchemaType, CreateSchemaType, UpdateSchemaType],
 ):
-    """Pydantic oriented repository on top of SQLAlchemy."""
+    """Pydantic oriented database repository on top of SQLAlchemy."""
 
     _model: ClassVar[Type[ModelType]]
     _schema: ClassVar[Type[SchemaType]]
@@ -37,7 +38,7 @@ class SQLAlchemyRepositoryBase(
         clauses: Sequence[ColumnExpressionArgument] = ()
 
         # options:
-        refresh: bool = False
+        cached: bool = False
         loading_options: tuple[ORMOption, ...] = ()
 
     def __init__(self, session: SessionDepends, logger: LoggerDepends) -> None:
@@ -56,29 +57,19 @@ class SQLAlchemyRepositoryBase(
         i = inspect(cls._model)
         return set(i.all_orm_descriptors.keys()) - set(i.relationships.keys())
 
-    async def get(
-        self,
-        pk: PrimaryKeyType,
-        *,
-        refresh: bool = False,
-    ) -> SchemaType:
+    async def get(self, pk: PrimaryKeyType, *, cached: bool = False) -> SchemaType:
         """Get one instance by PK. Using cached or querying database."""
-        ctx = self.SelectContext(extra_filters=dict(id=pk), refresh=refresh)
-        instance = await self._get_instance_by_id(pk, refresh=refresh)
+        ctx = self.SelectContext(extra_filters=dict(id=pk), cached=cached)
+        instance = await self._get_instance_by_id(pk, cached=cached)
         return self._use_result(instance, ctx=ctx)
 
-    async def get_one(
-        self,
-        *,
-        refresh: bool = False,
-        **filters,
-    ) -> SchemaType:
+    async def get_one(self, *, cached: bool = False, **filters) -> SchemaType:
         """
         Get one instance by filters/clauses.
         """
         ctx = self.SelectContext(
             extra_filters=filters,
-            refresh=refresh,
+            cached=cached,
         )
         stm = self._build_select_statement(ctx=ctx)
         instance = await self._get_instance(stm, ctx=ctx)
@@ -87,30 +78,29 @@ class SQLAlchemyRepositoryBase(
     async def get_one_or_none(
         self,
         *,
-        refresh: bool = False,
+        cached: bool = False,
         **filters,
     ) -> SchemaType | None:
         try:
-            return await self.get_one(refresh=refresh, **filters)
-        except (DeletedInstanceError, NotFoundInstanceError):
+            return await self.get_one(cached=cached, **filters)
+        except NoResultFound:
             return None
 
     async def get_all(
         self,
         *,
-        refresh: bool = False,
+        cached: bool = False,
     ) -> list[SchemaType]:
         return await self.get_where(
-            refresh=refresh,
+            cached=cached,
         )
 
     async def get_where(
         self,
         filters_schema: BaseSchema | None = None,
         *,
-        refresh: bool = False,
+        cached: bool = False,
         clauses: Sequence[ColumnExpressionArgument] = (),
-        limit: int | None = None,
         **extra_filters,
     ) -> list[SchemaType]:
         """
@@ -120,8 +110,7 @@ class SQLAlchemyRepositoryBase(
             filters_schema=filters_schema,
             extra_filters=extra_filters,
             clauses=clauses,
-            refresh=refresh,
-            limit=limit,
+            cached=cached,
         )
         stm = self._build_select_statement(ctx=ctx)
         items = await self._get_instances_list(stm, ctx=ctx)
@@ -131,13 +120,13 @@ class SQLAlchemyRepositoryBase(
         self,
         pk: PrimaryKeyType,
         *,
-        refresh: bool = False,
+        cached: bool = False,
     ) -> ModelType:
-        if not refresh and (inst := self._storage.get(pk)):
-            return self._session.get(self._model, pk)
+        if cached:
+            return await self._session.get_one(self._model, pk)
 
         # re-fetch instance:
-        ctx = self.SelectContext(extra_filters=dict(id=pk), refresh=refresh)
+        ctx = self.SelectContext(extra_filters=dict(id=pk), cached=cached)
         stm = self._build_select_statement(ctx=ctx)
         return await self._get_instance(stm, ctx=ctx)
 
@@ -177,7 +166,7 @@ class SQLAlchemyRepositoryBase(
         self._session.add(instance)
         await self._session.flush([instance])
         if refresh:
-            instance = await self._get_instance_by_id(instance.id, refresh=True)
+            instance = await self._get_instance_by_id(instance.id, cached=False)
         return self._use_result(instance)
 
     async def pending_create(
@@ -209,7 +198,7 @@ class SQLAlchemyRepositoryBase(
         await self._session.flush([instance])
 
         if refresh:
-            instance = await self._get_instance_by_id(instance.id, refresh=True)
+            instance = await self._get_instance_by_id(instance.id, cached=False)
         return self._use_result(instance)
 
     async def pending_update(
@@ -326,30 +315,30 @@ class SQLAlchemyRepositoryBase(
         return stm.options(*ctx.loading_options)
 
     def _apply_execution_options(self, stm: Select, *, ctx: SelectContext) -> Select:
-        return stm.execution_options(populate_existing=ctx.refresh)
+        return stm.execution_options(populate_existing=not ctx.cached)
 
     def _apply_order(self, stm: Select, *, ctx: SelectContext) -> Select:
         return stm.order_by(self._model.id)
 
-    @overload
-    def _use_result(
-        self,
-        instance: ModelType,
-        *,
-        ctx: SelectContext | None = None,
-        adapter: None = None,
-    ) -> SchemaType:
-        ...
+    # @overload
+    # def _use_result(
+    #     self,
+    #     instance: ModelType,
+    #     *,
+    #     ctx: SelectContext | None = None,
+    #     adapter: None = None,
+    # ) -> SchemaType:
+    #     ...
 
-    @overload
-    def _use_result(
-        self,
-        instance: Sequence[ModelType],
-        *,
-        ctx: SelectContext | None = None,
-        adapter: TypeAdapter[list[SchemaType]],
-    ) -> list[SchemaType]:
-        ...
+    # @overload
+    # def _use_result(
+    #     self,
+    #     instance: Sequence[ModelType],
+    #     *,
+    #     ctx: SelectContext | None = None,
+    #     adapter: TypeAdapter[list[SchemaType]],
+    # ) -> list[SchemaType]:
+    #     ...
 
     def _use_result(
         self,
