@@ -10,7 +10,7 @@ BLOOD_PRESSURE_CONCEPT = schemas.CodeableConcept(
         )
     ],
 )
-HEMOGLOBIN_CONCEPT = schemas.CodeableConcept(
+BLOOD_HEMOGLOBIN_CONCEPT = schemas.CodeableConcept(
     text="Hemoglobin",
     coding=[
         schemas.Coding(
@@ -28,5 +28,27 @@ BLOOD_GLUCOSE_CONCEPT = schemas.CodeableConcept(
             code="2339-0",
             display="Blood Glucose",
         )
+    ],
+)
+
+PHYSICAL_ACTIVITY_CONCEPT = schemas.CodeableConcept(
+    text="Physical Activity",
+    coding=[
+        schemas.Coding(
+            system="http://loinc.org",
+            code="55423-8",
+            display="Physical Activity",
+        ),
+    ],
+)
+
+SLEEP_ACTIVITY_CONCEPT = schemas.CodeableConcept(
+    text="Sleep Activity",
+    coding=[
+        schemas.Coding(
+            system="http://loinc.org",
+            code="93832-4",
+            display="Sleep duration",
+        ),
     ],
 )

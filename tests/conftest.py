@@ -101,5 +101,5 @@ async def patient(client: HealthTrackerAdapter) -> schemas.PatientRead:
 @pytest.fixture
 async def init_concepts(client: HealthTrackerAdapter) -> None:
     await client.create_codeable_concept(constants.BLOOD_PRESSURE_CONCEPT)
-    await client.create_codeable_concept(constants.HEMOGLOBIN_CONCEPT)
+    await client.create_codeable_concept(constants.BLOOD_HEMOGLOBIN_CONCEPT)
     await client.create_codeable_concept(constants.BLOOD_GLUCOSE_CONCEPT)

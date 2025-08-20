@@ -7,10 +7,6 @@ from app.dependencies.exceptions import HTTPBadRequestError, HTTPNotFoundError
 from app.schemas import schemas
 from tests.conftest import TEST_DT
 
-pytestmark = [
-    pytest.mark.usefixtures("setup_tables"),
-]
-
 
 async def test_patient_crud(client: HealthTrackerAdapter) -> None:
     create_payload = schemas.PatientCreate(
@@ -69,6 +65,8 @@ async def test_codeable_concept_crud(client: HealthTrackerAdapter) -> None:
         await client.get_codeable_concept(uuid.uuid4())
     with pytest.raises(HTTPNotFoundError):
         await client.update_codeable_concept(uuid.uuid4(), update_payload)
+
+    # nested relationship update currently is not supported:
     with pytest.raises(HTTPBadRequestError):
         await client.update_codeable_concept(
             result.id,
@@ -96,6 +94,8 @@ async def test_observation_crud(
         effective_datetime_start=TEST_DT,
         effective_datetime_end=TEST_DT,
         issued=TEST_DT,
+        value_quantity=100,
+        value_quantity_unit="mg/dL",
         # relations:
         subject_id=patient.id,
         code_id=code.id,
@@ -108,6 +108,8 @@ async def test_observation_crud(
     assert result.effective_datetime_start == create_payload.effective_datetime_start
     assert result.effective_datetime_end == create_payload.effective_datetime_end
     assert result.issued == create_payload.issued
+    assert result.value_quantity == create_payload.value_quantity
+    assert result.value_quantity_unit == create_payload.value_quantity_unit
     assert result.subject == patient
     assert result.code == code
     assert result.category == categories
@@ -119,12 +121,14 @@ async def test_observation_crud(
     categories = codeable_concepts[2:]  # update codeable concept relationship
     update_payload = schemas.ObservationUpdate(
         status=schemas.ObservationStatus.FINAL,
+        value_quantity=200,
         code_id=code.id,
         category_ids=[c.id for c in categories],
     )
 
     result = await client.update_observation(result.id, update_payload)
     assert result.status == update_payload.status
+    assert result.value_quantity == update_payload.value_quantity
     assert result.code == code
     assert result.category == categories
     assert result.issued == create_payload.issued  # left unchanged

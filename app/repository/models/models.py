@@ -51,9 +51,8 @@ class Observation(Base):
         ForeignKey(CodeableConcept.id), index=True
     )
 
-    # TODO
-    # value_quantity: Mapped[Quantity] = relationship()
-    # reference_range: Mapped[list[ObservationReferenceRange]] = relationship()
+    value_quantity: Mapped[float]
+    value_quantity_unit: Mapped[str | None]
 
 
 class CodeableConceptToCoding(Base):

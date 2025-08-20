@@ -112,9 +112,13 @@ class ObservationStatus(StrEnum):
 
 class Observation(BaseSchema):
     status: ObservationStatus
+
     effective_datetime_start: AwareDatetime
     effective_datetime_end: AwareDatetime
     issued: AwareDatetime | None = None
+
+    value_quantity: float
+    value_quantity_unit: str | None = None
 
 
 class ObservationRead(ReadSchemaBase, Observation):
@@ -138,9 +142,11 @@ class ObservationCreate(CreateSchemaBase, Observation):
 
 class ObservationUpdate(UpdateSchemaBase, Observation):
     status: ObservationStatus | None = None
+
     effective_datetime_start: AwareDatetime | None = None
     effective_datetime_end: AwareDatetime | None = None
-    issued: AwareDatetime | None = None
+    value_quantity: float | None = None
+
     code_id: uuid.UUID | None = None
     subject_id: uuid.UUID | None = None
     category_ids: list[uuid.UUID] | None = None
