@@ -1,0 +1,50 @@
+# docker compose is only for local development reference
+# shows the structure that is translated to AWS services by terraform
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: health_tracker_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    build: .
+    restart: "no"
+    command: uv run alembic upgrade head
+    environment:
+      HEALTH_TRACKER_DATABASE_HOST: db
+      HEALTH_TRACKER_DATABASE_USER: postgres
+      HEALTH_TRACKER_DATABASE_PASSWORD: password
+      HEALTH_TRACKER_DATABASE_NAME: health_tracker_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    restart: always
+    environment:
+      HEALTH_TRACKER_DATABASE_HOST: db
+      HEALTH_TRACKER_DATABASE_USER: postgres
+      HEALTH_TRACKER_DATABASE_PASSWORD: password
+      HEALTH_TRACKER_DATABASE_NAME: health_tracker_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

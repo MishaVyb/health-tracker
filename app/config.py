@@ -186,7 +186,11 @@ class AppSettings(BaseSettings):
 
     def __repr_args__(self):
         for k, v in super().__repr_args__():
-            if k in self.model_fields_set and self.model_fields[k].repr:
+            if (
+                k in self.model_fields_set
+                and k in self.model_fields
+                and self.model_fields[k].repr
+            ):
                 yield (k, v)
 
     def __str__(self) -> str:
