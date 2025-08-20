@@ -3,6 +3,7 @@ from typing import Annotated
 
 from fastapi import Depends
 
+from app.dependencies.exceptions import HTTPBadRequestError
 from app.repository.repositories import DatabaseRepositoriesDepends
 from app.schemas import schemas
 from app.schemas.base import EMPTY_PAYLOAD
@@ -61,7 +62,16 @@ class HealthTrackerService:
     async def update_codeable_concept(
         self, pk: uuid.UUID, payload: schemas.CodeableConceptUpdate
     ) -> schemas.CodeableConceptRead:
-        return await self.db.concepts.update(pk, payload)
+        instance = await self.db.concepts.update(pk, payload)
+
+        # handle many-to-many relationships:
+        if "coding" in payload.model_fields_set:
+            raise HTTPBadRequestError(
+                detail="Update nested coding is not currently supported."
+            )
+
+        # refresh instance:
+        return await self.db.concepts.get(instance.id, cached=False)
 
     async def delete_codeable_concept(self, pk: uuid.UUID) -> None:
         return await self.db.concepts.delete(pk)
@@ -94,7 +104,26 @@ class HealthTrackerService:
     async def update_observation(
         self, pk: uuid.UUID, payload: schemas.ObservationUpdate
     ) -> schemas.ObservationRead:
-        return await self.db.observations.update(pk, payload)
+        instance = await self.db.observations.update(pk, payload)
+
+        # handle many-to-many relationships:
+        if "category_ids" in payload.model_fields_set:
+            # delete existing relationships:
+            await self.db.observation_to_concept.delete_where(
+                observation_id=instance.id,
+            )
+
+            # create new relationships:
+            for category in payload.category_ids or []:
+                category_instance = await self.db.concepts.get(category)
+                await self.db.observation_to_concept.pending_create(
+                    EMPTY_PAYLOAD,
+                    observation_id=instance.id,
+                    codeable_concept_id=category_instance.id,
+                )
+
+        # refresh instance:
+        return await self.db.observations.get(instance.id, cached=False)
 
     async def delete_observation(self, pk: uuid.UUID) -> None:
         return await self.db.observations.delete(pk)

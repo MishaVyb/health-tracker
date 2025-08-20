@@ -10,6 +10,10 @@ class HTTPException(fastapi.HTTPException):
         super().__init__(status_code=self.status_code, detail=detail)
 
 
+class HTTPBadRequestError(HTTPException):
+    status_code: int = status.HTTP_400_BAD_REQUEST
+
+
 class HTTPNotFoundError(HTTPException):
     status_code: int = status.HTTP_404_NOT_FOUND
 

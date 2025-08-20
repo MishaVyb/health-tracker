@@ -224,6 +224,20 @@ class SQLAlchemyRepositoryBase(
         if flush:
             await self._session.flush([instance])
 
+    async def delete_where(
+        self, flush: bool = False, clauses: tuple = (), **filters
+    ) -> None:
+        ctx = self.SelectContext(
+            extra_filters=filters, clauses=clauses, loading_options=()
+        )
+        stm = self._build_select_statement(ctx=ctx)
+        instances = await self._get_instances_list(stm, ctx=ctx)
+        for instance in instances:
+            self._logger.debug("[DATABASE] Delete: %s", instance)
+            await self._session.delete(instance)
+        if flush:
+            await self._session.flush(instances)
+
     def _use_payload_create(
         self, payload: CreateSchemaType | UpdateSchemaType, **extra_values
     ) -> dict:

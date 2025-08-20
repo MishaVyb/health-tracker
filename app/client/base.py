@@ -6,7 +6,11 @@ import httpx
 from fastapi import HTTPException
 from pydantic import BaseModel, TypeAdapter
 
-from app.dependencies.exceptions import HTTPNotFoundError, HTTPTimeoutError
+from app.dependencies.exceptions import (
+    HTTPBadRequestError,
+    HTTPNotFoundError,
+    HTTPTimeoutError,
+)
 
 _T = TypeVar("_T")
 _TSchema = TypeVar("_TSchema", bound=BaseModel)
@@ -156,14 +160,15 @@ class HTTPAdapterBase:
         except asyncio.TimeoutError:
             raise HTTPTimeoutError(f"HTTP Request timed out: {method} {url}")
 
-        # reraise error with original code:
+        # reraise http error with original status code:
         except httpx.HTTPStatusError as e:
             detail = (
                 f"HTTP Request failed: bad status code received. {method} {url} {e}"
             )
-
             if e.response.status_code == HTTPNotFoundError.status_code:
                 raise HTTPNotFoundError(detail)
+            if e.response.status_code == HTTPBadRequestError.status_code:
+                raise HTTPBadRequestError(detail)
 
             raise HTTPException(status_code=e.response.status_code, detail=detail)
 

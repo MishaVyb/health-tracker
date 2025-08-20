@@ -1,7 +1,9 @@
+import uuid
+
 import pytest
 
 from app.client.client import HealthTrackerAdapter
-from app.dependencies.exceptions import HTTPNotFoundError
+from app.dependencies.exceptions import HTTPBadRequestError, HTTPNotFoundError
 from app.schemas import schemas
 from tests.conftest import TEST_DT
 
@@ -44,7 +46,7 @@ async def test_patient_crud(client: HealthTrackerAdapter) -> None:
 async def test_codeable_concept_crud(client: HealthTrackerAdapter) -> None:
     create_payload = schemas.CodeableConceptCreate(
         text="TEST_CONCEPT_1",
-        coding=[schemas.Coding(system="TEST_SYSTEM", code="123")],
+        coding=[schemas.Coding(system="TEST_SYSTEM", code="1")],
     )
 
     result = await client.create_codeable_concept(create_payload)
@@ -57,11 +59,25 @@ async def test_codeable_concept_crud(client: HealthTrackerAdapter) -> None:
     )
     result = await client.update_codeable_concept(result.id, update_payload)
     assert result.text == update_payload.text
-    assert result.coding[0].code == result.coding[0].code  # left unchanged
+    assert result.coding[0].code == create_payload.coding[0].code  # left unchanged
 
     assert result == await client.get_codeable_concept(result.id)
     assert result == (await client.get_codeable_concepts()).items[0]
 
+    # 4xx errors:
+    with pytest.raises(HTTPNotFoundError):
+        await client.get_codeable_concept(uuid.uuid4())
+    with pytest.raises(HTTPNotFoundError):
+        await client.update_codeable_concept(uuid.uuid4(), update_payload)
+    with pytest.raises(HTTPBadRequestError):
+        await client.update_codeable_concept(
+            result.id,
+            schemas.CodeableConceptUpdate(
+                coding=[schemas.Coding(system="TEST_SYSTEM", code="2")]
+            ),
+        )
+
+    # delete:
     await client.delete_codeable_concept(result.id)
     with pytest.raises(HTTPNotFoundError):
         assert await client.get_codeable_concept(result.id)
@@ -72,7 +88,9 @@ async def test_codeable_concept_crud(client: HealthTrackerAdapter) -> None:
 async def test_observation_crud(
     client: HealthTrackerAdapter, patient: schemas.PatientRead
 ) -> None:
-    concept = (await client.get_codeable_concepts()).items[0]
+    codeable_concepts = (await client.get_codeable_concepts()).items
+    code = codeable_concepts[0]
+    categories = codeable_concepts[1:]
     create_payload = schemas.ObservationCreate(
         status=schemas.ObservationStatus.PRELIMINARY,
         effective_datetime_start=TEST_DT,
@@ -80,7 +98,8 @@ async def test_observation_crud(
         issued=TEST_DT,
         # relations:
         subject_id=patient.id,
-        code_id=concept.id,
+        code_id=code.id,
+        category_ids=[c.id for c in categories],
     )
 
     result = await client.create_observation(create_payload)
@@ -90,24 +109,42 @@ async def test_observation_crud(
     assert result.effective_datetime_end == create_payload.effective_datetime_end
     assert result.issued == create_payload.issued
     assert result.subject == patient
-    assert result.code == concept
+    assert result.code == code
+    assert result.category == categories
 
     assert result == await client.get_observation(result.id)
     assert result == (await client.get_observations()).items[0]
 
+    code = codeable_concepts[1]  # update codeable concept relationship
+    categories = codeable_concepts[2:]  # update codeable concept relationship
     update_payload = schemas.ObservationUpdate(
         status=schemas.ObservationStatus.FINAL,
+        code_id=code.id,
+        category_ids=[c.id for c in categories],
     )
 
     result = await client.update_observation(result.id, update_payload)
     assert result.status == update_payload.status
+    assert result.code == code
+    assert result.category == categories
     assert result.issued == create_payload.issued  # left unchanged
     assert result.subject == patient  # left unchanged
-    assert result.code == concept  # left unchanged
 
     assert result == await client.get_observation(result.id)
     assert result == (await client.get_observations()).items[0]
 
+    # 4xx errors:
+    with pytest.raises(HTTPNotFoundError):
+        await client.get_observation(uuid.uuid4())
+    with pytest.raises(HTTPNotFoundError):
+        await client.update_observation(uuid.uuid4(), update_payload)
+    with pytest.raises(HTTPNotFoundError):
+        await client.update_observation(
+            result.id,
+            schemas.ObservationUpdate(category_ids=[uuid.uuid4()]),
+        )
+
+    # delete:
     await client.delete_observation(result.id)
     with pytest.raises(HTTPNotFoundError):
         assert await client.get_observation(result.id)

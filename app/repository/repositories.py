@@ -3,8 +3,11 @@ from typing import Annotated, Never
 from uuid import UUID
 
 from fastapi import Depends
+from sqlalchemy import Select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.orm.interfaces import ORMOption
+
+from app.schemas.base import BaseSchema
 
 from . import models, schemas
 from .base import SQLAlchemyRepositoryBase
@@ -59,6 +62,11 @@ class CodeableConceptRepo(
             selectinload(models.CodeableConcept.coding),
         )
 
+    def _apply_order(
+        self, stm: Select, *, ctx: SQLAlchemyRepositoryBase.SelectContext
+    ) -> Select:
+        return stm.order_by(models.CodeableConcept.text, models.CodeableConcept.id)
+
 
 class ObservationRepo(
     SQLAlchemyRepositoryBase[
@@ -89,9 +97,9 @@ class CodeableConceptToCodeRepo(
     SQLAlchemyRepositoryBase[
         models.CodeableConceptToCoding,
         UUID,
-        Never,
-        Never,
-        Never,
+        Never,  # get
+        BaseSchema,  # create
+        Never,  # update
     ]
 ):
     _model = models.CodeableConceptToCoding
@@ -102,9 +110,9 @@ class ObservationToCodeableConceptRepo(
     SQLAlchemyRepositoryBase[
         models.CodeableConceptToObservation,
         UUID,
-        Never,
-        Never,
-        Never,
+        Never,  # get
+        BaseSchema,  # create
+        Never,  # update
     ]
 ):
     _model = models.CodeableConceptToObservation
