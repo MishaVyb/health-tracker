@@ -12,7 +12,6 @@ warnings.filterwarnings("error", r"Pydantic serializer warnings")
 class BaseSchema(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
-        extra="forbid",
         populate_by_name=True,
         alias_generator=to_camel,
         use_attribute_docstrings=True,
@@ -26,11 +25,11 @@ class BaseSchema(BaseModel):
 
 
 class ReadSchemaBase(BaseSchema):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    id: uuid.UUID
 
 
 class CreateSchemaBase(BaseSchema):
-    pass
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
 
 
 class UpdateSchemaBase(BaseSchema):

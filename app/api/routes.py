@@ -2,7 +2,6 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Query
-from fhir.resources.diagnosticreport import DiagnosticReport
 from pydantic import AwareDatetime
 from starlette import status
 
@@ -185,7 +184,7 @@ async def get_health_score(
     end: Annotated[
         AwareDatetime, Query(description="End date of the observation period")
     ],
-) -> DiagnosticReport:
+) -> schemas.DiagnosticReport:
     """
     Calculate and return a health score for a patient.
 

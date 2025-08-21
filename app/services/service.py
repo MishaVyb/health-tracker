@@ -5,9 +5,6 @@ from statistics import mean, stdev
 from typing import Annotated
 
 from fastapi import Depends
-from fhir.resources.attachment import Attachment
-from fhir.resources.diagnosticreport import DiagnosticReport
-from fhir.resources.reference import Reference
 
 from app.dependencies.dependencies import AppSettingsDepends
 from app.dependencies.exceptions import HTTPBadRequestError
@@ -21,6 +18,7 @@ from app.schemas.constants import (
     HEALTH_SCORE_PANEL_CODING,
     LABORATORY_CATEGORY_CODING,
 )
+from app.schemas.schemas import Attachment, DiagnosticReport, Reference
 
 
 class HealthTrackerService:
@@ -311,29 +309,28 @@ class HealthTrackerService:
             code=schemas.CodeableConcept(
                 coding=[HEALTH_SCORE_PANEL_CODING],
                 text="Comprehensive Health Score Assessment",
-            ).model_dump(),
-            subject=Reference(
-                reference=f"Patient/{filters.subject_ids[0]}", type="Patient"
             ),
+            subject=Reference(reference=str(filters.subject_ids[0]), type="Patient"),
+            effective_period=schemas.Period(start=filters.start, end=filters.end),
             issued=datetime.now(timezone.utc),
             result=[
-                Reference(reference=f"Observation/{obs.id}", type="Observation")
+                Reference(reference=str(obs.id), type="Observation")
                 for obs in observations
             ],
             conclusion=conclusion,
-            conclusionCode=[
+            conclusion_code=[
                 schemas.CodeableConcept(
                     coding=[HEALTH_ASSESSMENT_CODING],
                     text="Health Score Assessment",
-                ).model_dump(),
+                ),
             ],
             category=[
                 schemas.CodeableConcept(
                     coding=[LABORATORY_CATEGORY_CODING],
                     text="Health Assessment",
-                ).model_dump(),
+                ),
             ],
-            presentedForm=[
+            presented_form=[
                 Attachment(
                     contentType="text/plain",
                     data=conclusion.encode(),

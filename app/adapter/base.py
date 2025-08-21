@@ -222,7 +222,7 @@ class HTTPAdapterBase:
     async def _validate_content(
         self,
         response_schema: Any,
-        content: bytes | None,
+        content: bytes | str | None,
         validation_context: dict[str, Any] | None = None,
     ) -> Any:
         """

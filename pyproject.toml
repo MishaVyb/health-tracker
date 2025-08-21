@@ -55,12 +55,16 @@ ignore_missing_imports = true
 strict = false # TODO: enable strict mode
 show_error_codes = true
 
+allow_redefinition = true
+allow_redefinition_new = true
+local_partial_types = true
+
 disable_error_code = [
     "assignment",
     "misc",
+    "override",
     # #https://mypy.readthedocs.io/en/stable/error_code_list.html#require-annotation-if-variable-type-is-unclear-var-annotated
     # "var-annotated", # allows: foo = [], bar = {}
-    # "override",
     # "truthy-bool",   # allows for optional pydantic fields declared via ModelConstructor
 ]
 

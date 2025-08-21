@@ -1,0 +1,372 @@
+[
+  {
+    "resourceType": "Patient",
+    "id": "30b37fe1-cef8-5f27-8203-5089c18cef47",
+    "name": [
+      {
+        "family": "Smith",
+        "given": [
+          "John",
+          "Michael"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1990-05-15",
+    "address": [
+      {
+        "line": [
+          "123 Main St"
+        ],
+        "city": "New York",
+        "state": "NY",
+        "postalCode": "10001",
+        "country": "US"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-555-0123",
+        "use": "home"
+      },
+      {
+        "system": "email",
+        "value": "john.smith@email.com"
+      }
+    ]
+  },
+  {
+    "resourceType": "Patient",
+    "id": "15ac49b6-5088-5b7d-b5b7-98566fbf01c2",
+    "name": [
+      {
+        "family": "Johnson",
+        "given": [
+          "Sarah",
+          "Elizabeth"
+        ]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1985-08-22",
+    "address": [
+      {
+        "line": [
+          "456 Oak Ave"
+        ],
+        "city": "Los Angeles",
+        "state": "CA",
+        "postalCode": "90210",
+        "country": "US"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-555-0456",
+        "use": "mobile"
+      },
+      {
+        "system": "email",
+        "value": "sarah.johnson@email.com"
+      }
+    ]
+  },
+  {
+    "resourceType": "Patient",
+    "id": "172df656-9219-5523-bd14-ef9a50abb1df",
+    "name": [
+      {
+        "family": "Williams",
+        "given": [
+          "David",
+          "Robert"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1978-12-03",
+    "address": [
+      {
+        "line": [
+          "789 Pine St"
+        ],
+        "city": "Chicago",
+        "state": "IL",
+        "postalCode": "60601",
+        "country": "US"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-555-0789",
+        "use": "work"
+      },
+      {
+        "system": "email",
+        "value": "david.williams@email.com"
+      }
+    ]
+  },
+  {
+    "resourceType": "Patient",
+    "id": "f1de0857-adc8-598a-9a91-8970c61978b6",
+    "name": [
+      {
+        "family": "Brown",
+        "given": [
+          "Emily",
+          "Grace"
+        ]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1992-03-10",
+    "address": [
+      {
+        "line": [
+          "321 Elm St"
+        ],
+        "city": "Houston",
+        "state": "TX",
+        "postalCode": "77001",
+        "country": "US"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-555-0321",
+        "use": "mobile"
+      },
+      {
+        "system": "email",
+        "value": "emily.brown@email.com"
+      }
+    ]
+  },
+  {
+    "resourceType": "Patient",
+    "id": "598fd692-234c-58fb-9f01-fef37046160a",
+    "name": [
+      {
+        "family": "Davis",
+        "given": [
+          "Michael",
+          "Thomas"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1988-07-18",
+    "address": [
+      {
+        "line": [
+          "654 Maple Dr"
+        ],
+        "city": "Phoenix",
+        "state": "AZ",
+        "postalCode": "85001",
+        "country": "US"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-555-0654",
+        "use": "home"
+      },
+      {
+        "system": "email",
+        "value": "michael.davis@email.com"
+      }
+    ]
+  },
+  {
+    "resourceType": "Patient",
+    "id": "6fada453-3e0d-5be5-80ca-882d1e1770f5",
+    "name": [
+      {
+        "family": "Miller",
+        "given": [
+          "Jessica",
+          "Ann"
+        ]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1995-11-25",
+    "address": [
+      {
+        "line": [
+          "987 Cedar Ln"
+        ],
+        "city": "Philadelphia",
+        "state": "PA",
+        "postalCode": "19101",
+        "country": "US"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-555-0987",
+        "use": "mobile"
+      },
+      {
+        "system": "email",
+        "value": "jessica.miller@email.com"
+      }
+    ]
+  },
+  {
+    "resourceType": "Patient",
+    "id": "d80ce1c2-99ba-55ef-b715-9ef29487bde2",
+    "name": [
+      {
+        "family": "Wilson",
+        "given": [
+          "Christopher",
+          "James"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1983-04-12",
+    "address": [
+      {
+        "line": [
+          "147 Birch Rd"
+        ],
+        "city": "San Antonio",
+        "state": "TX",
+        "postalCode": "78201",
+        "country": "US"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-555-0147",
+        "use": "work"
+      },
+      {
+        "system": "email",
+        "value": "christopher.wilson@email.com"
+      }
+    ]
+  },
+  {
+    "resourceType": "Patient",
+    "id": "9b057188-0063-5bee-8921-a66418e2d99e",
+    "name": [
+      {
+        "family": "Moore",
+        "given": [
+          "Amanda",
+          "Rose"
+        ]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1990-09-30",
+    "address": [
+      {
+        "line": [
+          "258 Spruce Ave"
+        ],
+        "city": "San Diego",
+        "state": "CA",
+        "postalCode": "92101",
+        "country": "US"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-555-0258",
+        "use": "mobile"
+      },
+      {
+        "system": "email",
+        "value": "amanda.moore@email.com"
+      }
+    ]
+  },
+  {
+    "resourceType": "Patient",
+    "id": "c236a949-9e41-5fb4-ac37-859b64421551",
+    "name": [
+      {
+        "family": "Taylor",
+        "given": [
+          "Daniel",
+          "Paul"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1987-01-20",
+    "address": [
+      {
+        "line": [
+          "369 Willow St"
+        ],
+        "city": "Dallas",
+        "state": "TX",
+        "postalCode": "75201",
+        "country": "US"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-555-0369",
+        "use": "home"
+      },
+      {
+        "system": "email",
+        "value": "daniel.taylor@email.com"
+      }
+    ]
+  },
+  {
+    "resourceType": "Patient",
+    "id": "90f87971-4ff7-5ad4-8aab-6959f35bd0fe",
+    "name": [
+      {
+        "family": "Anderson",
+        "given": [
+          "Lisa",
+          "Marie"
+        ]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1993-06-08",
+    "address": [
+      {
+        "line": [
+          "741 Poplar Dr"
+        ],
+        "city": "San Jose",
+        "state": "CA",
+        "postalCode": "95101",
+        "country": "US"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-555-0741",
+        "use": "mobile"
+      },
+      {
+        "system": "email",
+        "value": "lisa.anderson@email.com"
+      }
+    ]
+  }
+]

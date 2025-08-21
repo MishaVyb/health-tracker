@@ -4,7 +4,7 @@ import pytest
 from dirty_equals import IsFloat
 from pytest_mock import MockerFixture
 
-from app.client.client import HealthTrackerAdapter
+from app.adapter.adapter import HealthTrackerAdapter
 from app.dependencies.exceptions import HTTPBadRequestError, HTTPNotFoundError
 from app.schemas import schemas
 from app.services.service import HealthTrackerService
@@ -219,28 +219,19 @@ async def test_get_health_score(
             )
             await client.create_observation(create_payload)
 
-    statistics = mocker.spy(HealthTrackerService, "_calculate_statistics_per_coding")
-    metrics = mocker.spy(HealthTrackerService, "_calculate_metrics_per_coding")
-    total_score = mocker.spy(HealthTrackerService, "_calculate_total_score")
+    metrics_spy = mocker.spy(HealthTrackerService, "_calculate_metrics_per_coding")
+    total_score_spy = mocker.spy(HealthTrackerService, "_calculate_total_score")
 
     result = await client.get_health_score(patient.id, start=TEST_DT, end=TEST_DT)
-    assert result.get_resource_type() == "DiagnosticReport"
 
     assert result.conclusion
     assert "Health Score:" in result.conclusion
-    print(result.conclusion)
-    return
 
-    stats: schemas.ObservationQuantityStatMap = statistics.spy_return
-    coding = codeable_concepts[0].coding[0]
-    assert stats[coding].mean == 110
-    assert stats[coding].stdev == IsFloat(approx=8, delta=1)
-    assert stats[coding].min == 100
-    assert stats[coding].max == 120
-    assert stats[coding].count == METRICS_NUM * PATIENTS_NUM
+    metrics: schemas.PatientMetrics = metrics_spy.spy_return
+    assert metrics.observation_count == METRICS_NUM * len(codeable_concepts)
+    assert metrics.observation_scores[0].patient_score == IsFloat(ge=60, le=70)
+    assert metrics.observation_scores[0].patient_stats.mean == IsFloat(ge=60, le=70)
+    assert metrics.observation_scores[0].population_stats.mean == IsFloat(ge=90, le=100)
 
-    m: schemas.PatientMetrics = metrics.spy_return
-    assert m.observation_count == METRICS_NUM * len(codeable_concepts)
-
-    score: float = total_score.spy_return
+    score: float = total_score_spy.spy_return
     assert score == IsFloat(gt=60, lt=70)

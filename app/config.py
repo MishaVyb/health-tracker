@@ -25,7 +25,6 @@ class AppSettings(BaseSettings):
         env_file=".env",
         env_prefix="HEALTH_TRACKER_",
         env_file_encoding="utf-8",
-        #
         arbitrary_types_allowed=True,
         validate_default=True,
         validate_return=True,
@@ -195,3 +194,22 @@ class AppSettings(BaseSettings):
 
     def __str__(self) -> str:
         return repr(self)
+
+
+class IntegrationSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="INTEGRATION_",
+        env_file_encoding="utf-8",
+        arbitrary_types_allowed=True,
+        validate_default=True,
+        validate_return=True,
+        frozen=True,
+        extra="allow",
+    )
+
+    HEALTH_TRACKER_BASE_URL: str
+    HEALTH_TRACKER_TOKEN: str | None = None
+
+    EXTERNAL_FHIR_PATIENTS_FILE: Path = Path("data/patients.json")
+    EXTERNAL_FHIR_OBSERVATIONS_FILE: Path = Path("data/observations.json")

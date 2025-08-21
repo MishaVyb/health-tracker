@@ -8,8 +8,8 @@ from pydantic import SecretStr
 from sqlalchemy import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from app.adapter.adapter import HealthTrackerAdapter
 from app.app import HealthTrackerAPP
-from app.client.client import HealthTrackerAdapter
 from app.config import AppSettings, AsyncDatabaseDriver
 from app.main import setup
 from app.repository.models import Base

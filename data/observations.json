@@ -1,0 +1,2811 @@
+[
+  {
+    "resourceType": "Observation",
+    "id": "5e7580e2-cf8f-594e-9207-62e91997ac3b",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "vital-signs",
+            "display": "Vital Signs"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "text": "Blood Pressure"
+    },
+    "subject": {
+      "reference": "30b37fe1-cef8-5f27-8203-5089c18cef47"
+    },
+    "effectiveDateTime": "2024-01-15T08:00:00Z",
+    "issued": "2024-01-15T08:15:00Z",
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 120,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      },
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 80,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "18af34c2-8df7-5d18-959a-362b1419b477",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "718-7",
+          "display": "Hemoglobin"
+        }
+      ],
+      "text": "Hemoglobin"
+    },
+    "subject": {
+      "reference": "30b37fe1-cef8-5f27-8203-5089c18cef47"
+    },
+    "effectiveDateTime": "2024-01-15T07:00:00Z",
+    "issued": "2024-01-15T09:30:00Z",
+    "valueQuantity": {
+      "value": 14.2,
+      "unit": "g/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 13.5,
+          "unit": "g/dL"
+        },
+        "high": {
+          "value": 17.5,
+          "unit": "g/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "2461f69b-afa3-5646-8cd8-350319cf0cf4",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "2339-0",
+          "display": "Blood Glucose"
+        }
+      ],
+      "text": "Blood Glucose"
+    },
+    "subject": {
+      "reference": "30b37fe1-cef8-5f27-8203-5089c18cef47"
+    },
+    "effectiveDateTime": "2024-01-15T07:00:00Z",
+    "issued": "2024-01-15T09:30:00Z",
+    "valueQuantity": {
+      "value": 95,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 70,
+          "unit": "mg/dL"
+        },
+        "high": {
+          "value": 100,
+          "unit": "mg/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "ab45fc92-3b7a-5715-a8fe-21f24432a9bc",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "30b37fe1-cef8-5f27-8203-5089c18cef47"
+    },
+    "effectiveDateTime": "2024-01-15T07:00:00Z",
+    "valueQuantity": {
+      "value": 45,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 8500,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "c67bb103-5dba-562f-b9ea-66f105b80b6d",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep Activity"
+    },
+    "subject": {
+      "reference": "30b37fe1-cef8-5f27-8203-5089c18cef47"
+    },
+    "effectivePeriod": {
+      "start": "2024-01-14T22:00:00Z",
+      "end": "2024-01-15T06:30:00Z"
+    },
+    "valueQuantity": {
+      "value": 8.5,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 85,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "22e2e9e9-61ae-58e3-82c6-b913366642e7",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "vital-signs",
+            "display": "Vital Signs"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "text": "Blood Pressure"
+    },
+    "subject": {
+      "reference": "15ac49b6-5088-5b7d-b5b7-98566fbf01c2"
+    },
+    "effectiveDateTime": "2024-01-15T09:00:00Z",
+    "issued": "2024-01-15T09:15:00Z",
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 118,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      },
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 75,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "b52d6887-5379-5bed-96f8-ddd9eaad027e",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "718-7",
+          "display": "Hemoglobin"
+        }
+      ],
+      "text": "Hemoglobin"
+    },
+    "subject": {
+      "reference": "15ac49b6-5088-5b7d-b5b7-98566fbf01c2"
+    },
+    "effectiveDateTime": "2024-01-15T08:00:00Z",
+    "issued": "2024-01-15T10:30:00Z",
+    "valueQuantity": {
+      "value": 13.8,
+      "unit": "g/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 12.0,
+          "unit": "g/dL"
+        },
+        "high": {
+          "value": 15.5,
+          "unit": "g/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "0665730d-6265-52db-860a-cb8b8796e4a8",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "2339-0",
+          "display": "Blood Glucose"
+        }
+      ],
+      "text": "Blood Glucose"
+    },
+    "subject": {
+      "reference": "15ac49b6-5088-5b7d-b5b7-98566fbf01c2"
+    },
+    "effectiveDateTime": "2024-01-15T08:00:00Z",
+    "issued": "2024-01-15T10:30:00Z",
+    "valueQuantity": {
+      "value": 88,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 70,
+          "unit": "mg/dL"
+        },
+        "high": {
+          "value": 100,
+          "unit": "mg/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "0081af6c-8f41-55a2-b308-61aa55a4c50d",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "15ac49b6-5088-5b7d-b5b7-98566fbf01c2"
+    },
+    "effectiveDateTime": "2024-01-15T06:30:00Z",
+    "valueQuantity": {
+      "value": 60,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 12000,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "9eb4cf86-a2d8-51ed-bb5d-b656a9ffb2b0",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep Activity"
+    },
+    "subject": {
+      "reference": "15ac49b6-5088-5b7d-b5b7-98566fbf01c2"
+    },
+    "effectivePeriod": {
+      "start": "2024-01-14T23:00:00Z",
+      "end": "2024-01-15T07:00:00Z"
+    },
+    "valueQuantity": {
+      "value": 8.0,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 92,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "14ab2f90-00fa-543c-8b92-96cedf2b2b85",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep duration"
+    },
+    "subject": {
+      "reference": "15ac49b6-5088-5b7d-b5b7-98566fbf01c2"
+    },
+    "issued": "2024-01-14T06:38:00Z",
+    "effectivePeriod": {
+      "start": "2024-01-14T21:48:00Z",
+      "end": "2024-01-15T04:48:24.585113Z"
+    },
+    "valueQuantity": {
+      "value": 7.0,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 84,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "233b189b-0a18-5abd-945b-fd2744e87f57",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "2339-0",
+          "display": "Blood Glucose"
+        }
+      ],
+      "text": "Blood Glucose"
+    },
+    "subject": {
+      "reference": "172df656-9219-5523-bd14-ef9a50abb1df"
+    },
+    "effectiveDateTime": "2024-01-11T01:04:00Z",
+    "issued": "2024-01-11T01:45:00Z",
+    "valueQuantity": {
+      "value": 74.8,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 70,
+          "unit": "mg/dL"
+        },
+        "high": {
+          "value": 100,
+          "unit": "mg/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "7d6d7355-ca3c-5bf0-9aef-85be11aa3342",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "vital-signs",
+            "display": "Vital-Signs"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "text": "Blood Pressure"
+    },
+    "subject": {
+      "reference": "f1de0857-adc8-598a-9a91-8970c61978b6"
+    },
+    "effectiveDateTime": "2024-01-21T13:58:00Z",
+    "issued": "2024-01-21T14:29:00Z",
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 125.7,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      },
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 86.5,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "16844d2b-e0d1-5282-b6e9-6d3a41ec2157",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "598fd692-234c-58fb-9f01-fef37046160a"
+    },
+    "effectiveDateTime": "2024-01-10T04:50:00Z",
+    "issued": "2024-01-10T05:23:00Z",
+    "valueQuantity": {
+      "value": 57.1,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 13091,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "0dfe49f6-8a9f-5d53-bd09-57d3dbf98428",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep duration"
+    },
+    "subject": {
+      "reference": "6fada453-3e0d-5be5-80ca-882d1e1770f5"
+    },
+    "issued": "2024-01-19T10:21:00Z",
+    "effectivePeriod": {
+      "start": "2024-01-19T23:38:00Z",
+      "end": "2024-01-20T07:08:39.201171Z"
+    },
+    "valueQuantity": {
+      "value": 7.5,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 75,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "25a7f5a2-786b-5903-96d5-49d4b14796c8",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep duration"
+    },
+    "subject": {
+      "reference": "d80ce1c2-99ba-55ef-b715-9ef29487bde2"
+    },
+    "issued": "2024-01-21T04:13:00Z",
+    "effectivePeriod": {
+      "start": "2024-01-21T21:32:00Z",
+      "end": "2024-01-22T06:04:34.034497Z"
+    },
+    "valueQuantity": {
+      "value": 8.5,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 80,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "7f55dfc4-e814-5b68-8d1c-f285d80e0150",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "2339-0",
+          "display": "Blood Glucose"
+        }
+      ],
+      "text": "Blood Glucose"
+    },
+    "subject": {
+      "reference": "9b057188-0063-5bee-8921-a66418e2d99e"
+    },
+    "effectiveDateTime": "2024-01-19T14:48:00Z",
+    "issued": "2024-01-19T15:18:00Z",
+    "valueQuantity": {
+      "value": 82.5,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 70,
+          "unit": "mg/dL"
+        },
+        "high": {
+          "value": 100,
+          "unit": "mg/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "dd0a450e-a4f7-520d-a0f7-6af2faeaec99",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "718-7",
+          "display": "Hemoglobin"
+        }
+      ],
+      "text": "Hemoglobin"
+    },
+    "subject": {
+      "reference": "c236a949-9e41-5fb4-ac37-859b64421551"
+    },
+    "effectiveDateTime": "2024-01-10T13:30:00Z",
+    "issued": "2024-01-10T14:06:00Z",
+    "valueQuantity": {
+      "value": 15.2,
+      "unit": "g/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 12.0,
+          "unit": "g/dL"
+        },
+        "high": {
+          "value": 17.5,
+          "unit": "g/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "e3201e6e-d908-52c4-8d8b-350b3126c8f1",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "vital-signs",
+            "display": "Vital-Signs"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "text": "Blood Pressure"
+    },
+    "subject": {
+      "reference": "90f87971-4ff7-5ad4-8aab-6959f35bd0fe"
+    },
+    "effectiveDateTime": "2024-01-10T16:01:00Z",
+    "issued": "2024-01-10T16:39:00Z",
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 128.6,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      },
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 75.7,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "25b76948-8036-5f2c-9721-b75c134e4799",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "30b37fe1-cef8-5f27-8203-5089c18cef47"
+    },
+    "effectiveDateTime": "2024-01-20T10:31:00Z",
+    "issued": "2024-01-20T11:00:00Z",
+    "valueQuantity": {
+      "value": 108.9,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 7413,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "fbf1f427-f182-5462-a8eb-181bfb07c492",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "vital-signs",
+            "display": "Vital-Signs"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "text": "Blood Pressure"
+    },
+    "subject": {
+      "reference": "15ac49b6-5088-5b7d-b5b7-98566fbf01c2"
+    },
+    "effectiveDateTime": "2024-01-09T07:01:00Z",
+    "issued": "2024-01-09T07:28:00Z",
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 127.9,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      },
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 75.8,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "b2e0ff87-b8aa-53ea-8319-c6f8b98971ee",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep duration"
+    },
+    "subject": {
+      "reference": "172df656-9219-5523-bd14-ef9a50abb1df"
+    },
+    "issued": "2024-01-22T22:35:00Z",
+    "effectivePeriod": {
+      "start": "2024-01-22T23:14:00Z",
+      "end": "2024-01-23T08:44:31.367691Z"
+    },
+    "valueQuantity": {
+      "value": 9.5,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 91,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "67f4aa66-a1af-5f8d-9e8f-d32ded9d575f",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "f1de0857-adc8-598a-9a91-8970c61978b6"
+    },
+    "effectiveDateTime": "2024-01-15T13:06:00Z",
+    "issued": "2024-01-15T13:22:00Z",
+    "valueQuantity": {
+      "value": 58.8,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 8682,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "6b15e721-90c8-5c00-aab7-71178005ba2a",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "2339-0",
+          "display": "Blood Glucose"
+        }
+      ],
+      "text": "Blood Glucose"
+    },
+    "subject": {
+      "reference": "598fd692-234c-58fb-9f01-fef37046160a"
+    },
+    "effectiveDateTime": "2024-01-18T09:56:00Z",
+    "issued": "2024-01-18T10:13:00Z",
+    "valueQuantity": {
+      "value": 94.4,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 70,
+          "unit": "mg/dL"
+        },
+        "high": {
+          "value": 100,
+          "unit": "mg/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "daea17ca-f37b-5e6d-8aa5-4a58f7529f58",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "2339-0",
+          "display": "Blood Glucose"
+        }
+      ],
+      "text": "Blood Glucose"
+    },
+    "subject": {
+      "reference": "6fada453-3e0d-5be5-80ca-882d1e1770f5"
+    },
+    "effectiveDateTime": "2024-01-22T14:17:00Z",
+    "issued": "2024-01-22T15:00:00Z",
+    "valueQuantity": {
+      "value": 110.7,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 70,
+          "unit": "mg/dL"
+        },
+        "high": {
+          "value": 100,
+          "unit": "mg/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "613bb077-8a2d-5a9f-b307-cd7fca719170",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "2339-0",
+          "display": "Blood Glucose"
+        }
+      ],
+      "text": "Blood Glucose"
+    },
+    "subject": {
+      "reference": "d80ce1c2-99ba-55ef-b715-9ef29487bde2"
+    },
+    "effectiveDateTime": "2024-01-18T14:14:00Z",
+    "issued": "2024-01-18T14:32:00Z",
+    "valueQuantity": {
+      "value": 78.5,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 70,
+          "unit": "mg/dL"
+        },
+        "high": {
+          "value": 100,
+          "unit": "mg/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "ee9541bc-8fb7-5241-8d57-10509decc205",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "vital-signs",
+            "display": "Vital-Signs"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "text": "Blood Pressure"
+    },
+    "subject": {
+      "reference": "9b057188-0063-5bee-8921-a66418e2d99e"
+    },
+    "effectiveDateTime": "2024-01-11T12:08:00Z",
+    "issued": "2024-01-11T12:49:00Z",
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 139.7,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      },
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 65.9,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "8126f5d4-54ff-5d4e-8e11-e886fd787398",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "718-7",
+          "display": "Hemoglobin"
+        }
+      ],
+      "text": "Hemoglobin"
+    },
+    "subject": {
+      "reference": "c236a949-9e41-5fb4-ac37-859b64421551"
+    },
+    "effectiveDateTime": "2024-01-15T23:20:00Z",
+    "issued": "2024-01-16T00:03:00Z",
+    "valueQuantity": {
+      "value": 13.6,
+      "unit": "g/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 12.0,
+          "unit": "g/dL"
+        },
+        "high": {
+          "value": 17.5,
+          "unit": "g/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "fd0d1c6d-8f82-5b4b-95d5-b4ab32369453",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "90f87971-4ff7-5ad4-8aab-6959f35bd0fe"
+    },
+    "effectiveDateTime": "2024-01-17T22:24:00Z",
+    "issued": "2024-01-17T22:41:00Z",
+    "valueQuantity": {
+      "value": 77.6,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 14017,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "65bf97d4-e378-57ca-8581-f525b3e59cbd",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep duration"
+    },
+    "subject": {
+      "reference": "30b37fe1-cef8-5f27-8203-5089c18cef47"
+    },
+    "issued": "2024-01-08T03:38:00Z",
+    "effectivePeriod": {
+      "start": "2024-01-08T23:56:00Z",
+      "end": "2024-01-09T08:15:36.272781Z"
+    },
+    "valueQuantity": {
+      "value": 8.3,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 83,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "b9ec26e4-95ff-5186-950c-26ee88466194",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "15ac49b6-5088-5b7d-b5b7-98566fbf01c2"
+    },
+    "effectiveDateTime": "2024-01-19T17:47:00Z",
+    "issued": "2024-01-19T18:18:00Z",
+    "valueQuantity": {
+      "value": 58.1,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 4247,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "91481b0f-8065-5ccd-9315-5cd29313fd99",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "718-7",
+          "display": "Hemoglobin"
+        }
+      ],
+      "text": "Hemoglobin"
+    },
+    "subject": {
+      "reference": "172df656-9219-5523-bd14-ef9a50abb1df"
+    },
+    "effectiveDateTime": "2024-01-19T02:56:00Z",
+    "issued": "2024-01-19T03:23:00Z",
+    "valueQuantity": {
+      "value": 15.4,
+      "unit": "g/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 12.0,
+          "unit": "g/dL"
+        },
+        "high": {
+          "value": 17.5,
+          "unit": "g/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "75cac660-9081-56d3-a3bd-38e96caab4d2",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep duration"
+    },
+    "subject": {
+      "reference": "f1de0857-adc8-598a-9a91-8970c61978b6"
+    },
+    "issued": "2024-01-21T16:14:00Z",
+    "effectivePeriod": {
+      "start": "2024-01-21T21:01:00Z",
+      "end": "2024-01-22T05:07:02.829054Z"
+    },
+    "valueQuantity": {
+      "value": 8.1,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 88,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "92acf943-72ea-5cad-bc26-dd855b277059",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "598fd692-234c-58fb-9f01-fef37046160a"
+    },
+    "effectiveDateTime": "2024-01-13T04:10:00Z",
+    "issued": "2024-01-13T04:51:00Z",
+    "valueQuantity": {
+      "value": 22.1,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 9102,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "439741d4-cc8a-5eee-af7d-848cdc788acc",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "6fada453-3e0d-5be5-80ca-882d1e1770f5"
+    },
+    "effectiveDateTime": "2024-01-18T10:10:00Z",
+    "issued": "2024-01-18T10:37:00Z",
+    "valueQuantity": {
+      "value": 22.4,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 8827,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "60ecab15-4167-5afc-939b-37a684c8fbb3",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep duration"
+    },
+    "subject": {
+      "reference": "d80ce1c2-99ba-55ef-b715-9ef29487bde2"
+    },
+    "issued": "2024-01-17T22:17:00Z",
+    "effectivePeriod": {
+      "start": "2024-01-17T21:47:00Z",
+      "end": "2024-01-18T05:57:11.863687Z"
+    },
+    "valueQuantity": {
+      "value": 8.2,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 77,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "c316fe3c-b31b-56ea-b33d-cd2974021a05",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "vital-signs",
+            "display": "Vital-Signs"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "text": "Blood Pressure"
+    },
+    "subject": {
+      "reference": "9b057188-0063-5bee-8921-a66418e2d99e"
+    },
+    "effectiveDateTime": "2024-01-12T05:08:00Z",
+    "issued": "2024-01-12T05:24:00Z",
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 119.4,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      },
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 87.1,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "e0ae772b-d797-51a8-ba64-07eefe290ebb",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "2339-0",
+          "display": "Blood Glucose"
+        }
+      ],
+      "text": "Blood Glucose"
+    },
+    "subject": {
+      "reference": "c236a949-9e41-5fb4-ac37-859b64421551"
+    },
+    "effectiveDateTime": "2024-01-19T20:16:00Z",
+    "issued": "2024-01-19T20:53:00Z",
+    "valueQuantity": {
+      "value": 118.0,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 70,
+          "unit": "mg/dL"
+        },
+        "high": {
+          "value": 100,
+          "unit": "mg/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "bae9263a-8e85-5b12-b71b-ef5fc71853c0",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "90f87971-4ff7-5ad4-8aab-6959f35bd0fe"
+    },
+    "effectiveDateTime": "2024-01-20T06:15:00Z",
+    "issued": "2024-01-20T06:31:00Z",
+    "valueQuantity": {
+      "value": 48.8,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 3252,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "a99ef4f4-e2ea-5d36-baf3-9789da25d75e",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "718-7",
+          "display": "Hemoglobin"
+        }
+      ],
+      "text": "Hemoglobin"
+    },
+    "subject": {
+      "reference": "30b37fe1-cef8-5f27-8203-5089c18cef47"
+    },
+    "effectiveDateTime": "2024-01-14T12:34:00Z",
+    "issued": "2024-01-14T13:09:00Z",
+    "valueQuantity": {
+      "value": 12.2,
+      "unit": "g/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 12.0,
+          "unit": "g/dL"
+        },
+        "high": {
+          "value": 17.5,
+          "unit": "g/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "b35ad5a6-fc45-564b-8d58-1aba818cd845",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep duration"
+    },
+    "subject": {
+      "reference": "15ac49b6-5088-5b7d-b5b7-98566fbf01c2"
+    },
+    "issued": "2024-01-13T00:13:00Z",
+    "effectivePeriod": {
+      "start": "2024-01-12T23:32:00Z",
+      "end": "2024-01-13T05:45:57.119722Z"
+    },
+    "valueQuantity": {
+      "value": 6.2,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 84,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "3647f260-10d4-5e99-a32a-66d5dde4cc00",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "vital-signs",
+            "display": "Vital-Signs"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "text": "Blood Pressure"
+    },
+    "subject": {
+      "reference": "172df656-9219-5523-bd14-ef9a50abb1df"
+    },
+    "effectiveDateTime": "2024-01-09T21:31:00Z",
+    "issued": "2024-01-09T22:13:00Z",
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 127.7,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      },
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 60.9,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "d2def59b-b1f0-5f60-871e-6e0390ebd9d4",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "f1de0857-adc8-598a-9a91-8970c61978b6"
+    },
+    "effectiveDateTime": "2024-01-19T11:27:00Z",
+    "issued": "2024-01-19T12:03:00Z",
+    "valueQuantity": {
+      "value": 108.4,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 12348,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "f8478927-77f6-5c4f-b5bd-90e41d3a0c3b",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "718-7",
+          "display": "Hemoglobin"
+        }
+      ],
+      "text": "Hemoglobin"
+    },
+    "subject": {
+      "reference": "598fd692-234c-58fb-9f01-fef37046160a"
+    },
+    "effectiveDateTime": "2024-01-22T22:34:00Z",
+    "issued": "2024-01-22T23:17:00Z",
+    "valueQuantity": {
+      "value": 17.4,
+      "unit": "g/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 12.0,
+          "unit": "g/dL"
+        },
+        "high": {
+          "value": 17.5,
+          "unit": "g/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "cd062d69-3d7b-5725-8097-90fbb260a079",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "vital-signs",
+            "display": "Vital-Signs"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood Pressure"
+        }
+      ],
+      "text": "Blood Pressure"
+    },
+    "subject": {
+      "reference": "6fada453-3e0d-5be5-80ca-882d1e1770f5"
+    },
+    "effectiveDateTime": "2024-01-12T12:40:00Z",
+    "issued": "2024-01-12T12:59:00Z",
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 119.9,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      },
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 79.6,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "3f5509c0-f40f-5009-b9a9-b8ae07488b33",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "sleep",
+            "display": "Sleep"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration"
+        }
+      ],
+      "text": "Sleep duration"
+    },
+    "subject": {
+      "reference": "d80ce1c2-99ba-55ef-b715-9ef29487bde2"
+    },
+    "issued": "2024-01-11T16:46:00Z",
+    "effectivePeriod": {
+      "start": "2024-01-11T21:11:00Z",
+      "end": "2024-01-12T05:14:40.554237Z"
+    },
+    "valueQuantity": {
+      "value": 8.1,
+      "unit": "hours",
+      "system": "http://unitsofmeasure.org",
+      "code": "h"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93833-2",
+              "display": "Sleep efficiency"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 77,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "4dfa64a7-dd83-5422-9e54-e157c2634da7",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "718-7",
+          "display": "Hemoglobin"
+        }
+      ],
+      "text": "Hemoglobin"
+    },
+    "subject": {
+      "reference": "9b057188-0063-5bee-8921-a66418e2d99e"
+    },
+    "effectiveDateTime": "2024-01-19T19:24:00Z",
+    "issued": "2024-01-19T20:00:00Z",
+    "valueQuantity": {
+      "value": 15.4,
+      "unit": "g/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 12.0,
+          "unit": "g/dL"
+        },
+        "high": {
+          "value": 17.5,
+          "unit": "g/dL"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "b47221a8-9b42-5552-a488-b9c1794ef421",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "c236a949-9e41-5fb4-ac37-859b64421551"
+    },
+    "effectiveDateTime": "2024-01-14T17:15:00Z",
+    "issued": "2024-01-14T17:48:00Z",
+    "valueQuantity": {
+      "value": 36.3,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 14416,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "2f568c88-efeb-54c8-bc63-cf5ba0ef0137",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "activity",
+            "display": "Activity"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Physical Activity"
+        }
+      ],
+      "text": "Physical Activity"
+    },
+    "subject": {
+      "reference": "90f87971-4ff7-5ad4-8aab-6959f35bd0fe"
+    },
+    "effectiveDateTime": "2024-01-21T18:47:00Z",
+    "issued": "2024-01-21T19:11:00Z",
+    "valueQuantity": {
+      "value": 25.1,
+      "unit": "minutes",
+      "system": "http://unitsofmeasure.org",
+      "code": "min"
+    },
+    "component": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "41982-0",
+              "display": "Steps count"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 6695,
+          "unit": "steps",
+          "system": "http://unitsofmeasure.org",
+          "code": "steps"
+        }
+      }
+    ]
+  },
+  {
+    "resourceType": "Observation",
+    "id": "4e0ab1eb-b583-5c09-bc58-861fd26157df",
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "2339-0",
+          "display": "Blood Glucose"
+        }
+      ],
+      "text": "Blood Glucose"
+    },
+    "subject": {
+      "reference": "30b37fe1-cef8-5f27-8203-5089c18cef47"
+    },
+    "effectiveDateTime": "2024-01-14T18:31:00Z",
+    "issued": "2024-01-14T18:46:00Z",
+    "valueQuantity": {
+      "value": 102.5,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL"
+    },
+    "referenceRange": [
+      {
+        "low": {
+          "value": 70,
+          "unit": "mg/dL"
+        },
+        "high": {
+          "value": 100,
+          "unit": "mg/dL"
+        }
+      }
+    ]
+  }
+]

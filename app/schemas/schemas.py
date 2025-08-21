@@ -107,6 +107,9 @@ class CodeableConcept(BaseSchema):
     text: str
     coding: list[Coding] = []
 
+    def codes(self) -> tuple[CodeType, ...]:
+        return tuple(c.code for c in self.coding)
+
 
 class CodeableConceptRead(ReadSchemaBase, CodeableConcept):
     coding: list[CodingRead] = []
@@ -172,9 +175,13 @@ class ObservationUpdate(UpdateSchemaBase, Observation):
     effective_datetime_end: AwareDatetime | None = None
     value_quantity: float | None = None
 
-    code_id: uuid.UUID | None = None
+    # relationships:
     subject_id: uuid.UUID | None = None
+    """Foreign key reference to the Patient id."""
+    code_id: uuid.UUID | None = None
+    """Foreign key reference to the CodeableConcept id."""
     category_ids: list[uuid.UUID] | None = None
+    """Foreign key references to the CodeableConcept ids."""
 
 
 class ObservationFilters(BaseSchema):
@@ -184,7 +191,7 @@ class ObservationFilters(BaseSchema):
 
 
 ########################################################################################
-# Health Score Schemas
+# Diagnostic Report Schemas
 ########################################################################################
 
 
@@ -222,3 +229,39 @@ class PatientMetrics(BaseSchema):
     observation_count: int
     observation_codes: list[Coding]
     observation_scores: list[PatientScoreStat]
+
+
+class Reference(BaseSchema):
+    reference: str
+    type: str | None = None
+    display: str | None = None
+
+
+class Attachment(BaseSchema):
+    contentType: str | None = None
+    language: str | None = None
+    data: bytes | None = None
+    url: str | None = None
+    size: int | None = None
+    hash: bytes | None = None
+    title: str | None = None
+    creation: AwareDatetime | None = None
+
+
+class Period(BaseSchema):
+    start: AwareDatetime | None = None
+    end: AwareDatetime | None = None
+
+
+class DiagnosticReport(BaseSchema):
+    id: str | None = None
+    status: Status
+    code: CodeableConcept
+    subject: Reference | None = None
+    issued: AwareDatetime | None = None
+    result: list[Reference] = []
+    conclusion: str | None = None
+    conclusion_code: list[CodeableConcept] = []
+    category: list[CodeableConcept] = []
+    presented_form: list[Attachment] = []
+    effective_period: Period | None = None

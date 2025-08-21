@@ -1,10 +1,9 @@
 from http import HTTPMethod
 from uuid import UUID
 
-from fhir.resources.diagnosticreport import DiagnosticReport
 from pydantic import AwareDatetime
 
-from app.client.base import HTTPAdapterBase
+from app.adapter.base import HTTPAdapterBase
 from app.schemas import schemas
 
 
@@ -156,10 +155,10 @@ class HealthTrackerAdapter(HTTPAdapterBase):
 
     async def get_health_score(
         self, patient_id: UUID, start: AwareDatetime, end: AwareDatetime
-    ) -> DiagnosticReport:
+    ) -> schemas.DiagnosticReport:
         return await self._call_service(
             HTTPMethod.GET,
             f"/health-score/{patient_id}",
             params=schemas.ObservationFilters(start=start, end=end),
-            response_schema=DiagnosticReport,
+            response_schema=schemas.DiagnosticReport,
         )
