@@ -50,7 +50,9 @@ class HTTPAdapterBase:
     ) -> QueryParamTypes | None:
         """Build request Params."""
         if isinstance(params, BaseModel):
-            return params.model_dump(exclude_unset=True, by_alias=True, mode="json")
+            return params.model_dump(
+                exclude_unset=True, exclude_none=True, by_alias=True, mode="json"
+            )
         return params
 
     def _use_json(self, payload: BaseModel | None = None) -> str | None:

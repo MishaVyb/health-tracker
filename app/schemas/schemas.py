@@ -185,7 +185,9 @@ class ObservationUpdate(UpdateSchemaBase, Observation):
 
 
 class ObservationFilters(BaseSchema):
-    subject_ids: list[uuid.UUID] = []
+    kinds: list[CodeKind] | None = None
+    subject_ids: list[uuid.UUID] | None = None
+    codes: list[CodeType] | None = None
     start: AwareDatetime | None = None
     end: AwareDatetime | None = None
 

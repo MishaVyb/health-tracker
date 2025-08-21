@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timezone
+from pathlib import Path
 
 import pytest
 from asgi_lifespan import LifespanManager
@@ -9,11 +10,13 @@ from sqlalchemy import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app.adapter.adapter import HealthTrackerAdapter
+from app.adapter.external import ExternalFHIRAdapter, ExternalFHIRSourceJSONFiles
 from app.app import HealthTrackerAPP
 from app.config import AppSettings, AsyncDatabaseDriver
 from app.main import setup
 from app.repository.models import Base
 from app.schemas import constants, schemas
+from app.services.integration import HealthTrackerIntegration
 
 logger = logging.getLogger("conftest")
 
@@ -103,3 +106,19 @@ async def init_concepts(client: HealthTrackerAdapter) -> None:
     await client.create_codeable_concept(constants.BLOOD_PRESSURE_CONCEPT)
     await client.create_codeable_concept(constants.BLOOD_HEMOGLOBIN_CONCEPT)
     await client.create_codeable_concept(constants.BLOOD_GLUCOSE_CONCEPT)
+
+
+@pytest.fixture
+async def init_external_data(client: HealthTrackerAdapter) -> None:
+    service = HealthTrackerIntegration(
+        client=client,
+        external=ExternalFHIRAdapter(
+            source=ExternalFHIRSourceJSONFiles(
+                patients=Path("data/patients.json"),
+                observations=Path("data/observations.json"),
+            ),
+        ),
+        logger=logger,
+        strict=True,
+    )
+    await service.integrate()

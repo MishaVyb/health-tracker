@@ -158,6 +158,20 @@ async def test_observation_crud(
     assert (await client.get_observations()).items == []
 
 
+@pytest.mark.usefixtures("init_external_data")
+async def test_observations_filtering(client: HealthTrackerAdapter) -> None:
+    result = await client.get_observations(kinds=[schemas.CodeKind.BLOOD_TEST])
+    assert len(result.items) == 17
+
+    result = await client.get_observations(kinds=[schemas.CodeKind.PHYSICAL_ACTIVITY])
+    assert len(result.items) == 13
+
+    result = await client.get_observations(
+        kinds=[schemas.CodeKind.BLOOD_TEST, schemas.CodeKind.PHYSICAL_ACTIVITY]
+    )
+    assert len(result.items) == 17 + 13
+
+
 @pytest.mark.usefixtures("init_concepts")
 async def test_get_health_score(
     client: HealthTrackerAdapter, patient: schemas.PatientRead, mocker: MockerFixture

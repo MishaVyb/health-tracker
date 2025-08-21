@@ -62,10 +62,23 @@ class HealthTrackerAdapter(HTTPAdapterBase):
 
     async def get_observations(
         self,
+        *,
+        kinds: list[schemas.CodeKind] | None = None,
+        codes: list[schemas.CodeType] | None = None,
+        subject_ids: list[UUID] | None = None,
+        start: AwareDatetime | None = None,
+        end: AwareDatetime | None = None,
     ) -> schemas.GetObservationsResponse:
         return await self._call_service(
             HTTPMethod.GET,
             "/observations",
+            params=schemas.ObservationFilters(
+                kinds=kinds,
+                codes=codes,
+                subject_ids=subject_ids,
+                start=start,
+                end=end,
+            ),
             response_schema=schemas.GetObservationsResponse,
         )
 

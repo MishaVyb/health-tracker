@@ -53,7 +53,6 @@ SLEEP_ACTIVITY_CONCEPT = schemas.CodeableConcept(
     ],
 )
 
-# Health Score DiagnosticReport Coding Constants
 HEALTH_SCORE_PANEL_CODING = schemas.Coding(
     system="http://loinc.org",
     code="LP29693-3",
@@ -71,3 +70,14 @@ LABORATORY_CATEGORY_CODING = schemas.Coding(
     code="LAB",
     display="Laboratory",
 )
+
+
+def get_codeable_concepts(kind: schemas.CodeKind) -> list[schemas.CodeableConcept]:
+    if kind == schemas.CodeKind.BLOOD_TEST:
+        return [BLOOD_GLUCOSE_CONCEPT, BLOOD_HEMOGLOBIN_CONCEPT]
+    elif kind == schemas.CodeKind.PHYSICAL_ACTIVITY:
+        return [PHYSICAL_ACTIVITY_CONCEPT]
+    elif kind == schemas.CodeKind.SLEEP_ACTIVITY:
+        return [SLEEP_ACTIVITY_CONCEPT]
+    else:
+        raise ValueError(f"Unknown code kind: {kind}")

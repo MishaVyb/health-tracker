@@ -6,7 +6,7 @@ from pydantic import AwareDatetime
 from starlette import status
 
 from app.repository.repositories import DatabaseRepositoriesDepends
-from app.schemas import schemas
+from app.schemas import constants, schemas
 from app.services.service import HealthTrackerServiceDepends
 
 ########################################################################################
@@ -63,9 +63,9 @@ async def get_observations(
         list[schemas.CodeKind] | None,
         Query(description="List of observation kinds to filter observations by"),
     ] = None,
-    code_ids: Annotated[  # TODO
-        list[UUID] | None,
-        Query(description="List of code IDs to filter observations by"),
+    codes: Annotated[
+        list[schemas.CodeType] | None,
+        Query(description="List of codes to filter observations by"),
     ] = None,
     subject_ids: Annotated[
         list[UUID] | None,
@@ -80,8 +80,15 @@ async def get_observations(
         Query(description="End date of the observation period"),
     ] = None,
 ) -> schemas.GetObservationsResponse:
+    if kinds:
+        codes = codes or []
+        for kind in kinds:
+            for concept in constants.get_codeable_concepts(kind):
+                codes.extend(concept.codes())
+
     filters = schemas.ObservationFilters(
         subject_ids=subject_ids or [],
+        codes=codes,
         start=start,
         end=end,
     )

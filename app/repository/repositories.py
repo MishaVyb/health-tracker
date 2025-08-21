@@ -107,6 +107,14 @@ class ObservationRepo(
                 stm = stm.filter(
                     self._model.effective_datetime_end <= ctx.filters_schema.end
                 )
+            if ctx.filters_schema.codes:
+                stm = stm.filter(
+                    self._model.code.has(
+                        models.CodeableConcept.coding.any(
+                            models.Coding.code.in_(ctx.filters_schema.codes)
+                        )
+                    )
+                )
         return super()._apply_filters(stm, ctx=ctx)
 
 
