@@ -10,7 +10,7 @@
 
 A FastAPI-based health tracking application that manages patient data and medical observations with FHIR integration capabilities.
 
-**API Documentation**: http://localhost:8000/api/docs
+**API Documentation**: https://staging.objective.services/api/docs
 
 ## Core Functionality
 
