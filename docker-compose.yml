@@ -19,7 +19,7 @@ services:
     restart: "no"
     command: uv run alembic upgrade head
     environment:
-      HEALTH_TRACKER_APP_ENVIRONMENT: prod
+      HEALTH_TRACKER_APP_ENVIRONMENT: production
       HEALTH_TRACKER_DATABASE_HOST: db
       HEALTH_TRACKER_DATABASE_USER: postgres
       HEALTH_TRACKER_DATABASE_PASSWORD: password
@@ -34,7 +34,7 @@ services:
       - "8080:8000"
     restart: always
     environment:
-      HEALTH_TRACKER_APP_ENVIRONMENT: prod
+      HEALTH_TRACKER_APP_ENVIRONMENT: production
       HEALTH_TRACKER_DATABASE_HOST: db
       HEALTH_TRACKER_DATABASE_USER: postgres
       HEALTH_TRACKER_DATABASE_PASSWORD: password
