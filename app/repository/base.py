@@ -144,7 +144,7 @@ class SQLAlchemyRepositoryBase(
         self,
         payload: CreateSchemaType,
         refresh: bool = False,
-        **extra_values,
+        **extra_values: Any,
     ) -> SchemaType:
         data = self._use_payload_create(payload, **extra_values)
         instance = self._model(**data)
@@ -160,7 +160,7 @@ class SQLAlchemyRepositoryBase(
     async def pending_create(
         self,
         payload: CreateSchemaType,
-        **extra_values,
+        **extra_values: Any,
     ) -> None:
         data = self._use_payload_create(payload, **extra_values)
         instance = self._model(**data)
@@ -172,7 +172,7 @@ class SQLAlchemyRepositoryBase(
         pk: PrimaryKeyType,
         payload: UpdateSchemaType | None,
         refresh: bool = False,
-        **extra_values,
+        **extra_values: Any,
     ) -> SchemaType:
         data = self._use_payload_update(payload, **extra_values)
         instance = await self._get_instance_by_id(pk)
@@ -195,7 +195,7 @@ class SQLAlchemyRepositoryBase(
         self,
         pk: PrimaryKeyType,
         payload: UpdateSchemaType | None,
-        **extra_values,
+        **extra_values: Any,
     ) -> None:
         data = self._use_payload_update(payload, **extra_values)
         instance = await self._get_instance_by_id(pk)
@@ -229,7 +229,7 @@ class SQLAlchemyRepositoryBase(
             await self._session.flush(instances)
 
     def _use_payload_create(
-        self, payload: CreateSchemaType | UpdateSchemaType, **extra_values
+        self, payload: CreateSchemaType | UpdateSchemaType, **extra_values: Any
     ) -> dict:
         fieldnames = self.database_fieldnames()
         extra_values = {k: v for k, v in extra_values.items() if k in fieldnames}
@@ -267,7 +267,7 @@ class SQLAlchemyRepositoryBase(
         return defaults
 
     def _use_payload_update(
-        self, payload: CreateSchemaType | UpdateSchemaType | None, **extra_values
+        self, payload: CreateSchemaType | UpdateSchemaType | None, **extra_values: Any
     ) -> dict:
         fieldnames = self.database_fieldnames()
         extra_values = {k: v for k, v in extra_values.items() if k in fieldnames}
@@ -276,7 +276,7 @@ class SQLAlchemyRepositoryBase(
     def _use_payload(
         self,
         payload: CreateSchemaType | UpdateSchemaType | None,
-        **extra_values,
+        **extra_values: Any,
     ) -> dict:
         if not payload:
             return extra_values

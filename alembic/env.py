@@ -54,7 +54,7 @@ async def run_migrations_async() -> None:
 
 
 def setup() -> None:
-    settings = AppSettings()
+    settings = AppSettings()  # type: ignore[call-arg]
 
     setup_logging(settings)
 
