@@ -331,8 +331,7 @@ class SQLAlchemyRepositoryBase(
         *,
         ctx: SelectContext | None = None,
         adapter: None = None,
-    ) -> SchemaType:
-        ...
+    ) -> SchemaType: ...
 
     @overload
     def _use_result(
@@ -341,8 +340,7 @@ class SQLAlchemyRepositoryBase(
         *,
         ctx: SelectContext | None = None,
         adapter: TypeAdapter[list[SchemaType]],
-    ) -> list[SchemaType]:
-        ...
+    ) -> list[SchemaType]: ...
 
     def _use_result(
         self,
