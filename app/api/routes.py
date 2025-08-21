@@ -1,7 +1,7 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Path, Query
 from pydantic import AwareDatetime
 from starlette import status
 
@@ -16,6 +16,30 @@ from app.services.service import HealthTrackerServiceDepends
 
 patients = APIRouter(prefix="/patients", tags=["Patients"])
 
+PatientIdPathParam = Annotated[
+    UUID,
+    Path(json_schema_extra=dict(example="30b37fe1-cef8-5f27-8203-5089c18cef47")),
+]
+SubjectIdsQueryParam = Annotated[
+    list[UUID] | None,
+    Query(
+        description="List of patient IDs to filter observations by",
+        example=["30b37fe1-cef8-5f27-8203-5089c18cef47"],
+    ),
+]
+ObservationIdPathParam = Annotated[
+    UUID,
+    Path(json_schema_extra=dict(example="5e7580e2-cf8f-594e-9207-62e91997ac3b")),
+]
+CodeableConceptIdPathParam = Annotated[
+    UUID,
+    Path(json_schema_extra=dict(example="5e7580e2-cf8f-594e-9207-62e91997ac3b")),
+]
+DatetimeQueryParam = Annotated[
+    AwareDatetime | None,
+    Query(json_schema_extra=dict(example="2025-01-01 10:00Z")),
+]
+
 
 @patients.get("")
 async def get_patients(db: DatabaseRepositoriesDepends) -> schemas.GetPatientsResponse:
@@ -24,7 +48,7 @@ async def get_patients(db: DatabaseRepositoriesDepends) -> schemas.GetPatientsRe
 
 @patients.get("/{pk}")
 async def get_patient(
-    db: DatabaseRepositoriesDepends, *, pk: UUID
+    db: DatabaseRepositoriesDepends, *, pk: PatientIdPathParam
 ) -> schemas.PatientRead:
     return await db.patients.get(pk)
 
@@ -38,13 +62,18 @@ async def create_patient(
 
 @patients.patch("/{pk}", status_code=status.HTTP_200_OK)
 async def update_patient(
-    db: DatabaseRepositoriesDepends, *, pk: UUID, payload: schemas.PatientUpdate
+    db: DatabaseRepositoriesDepends,
+    *,
+    pk: PatientIdPathParam,
+    payload: schemas.PatientUpdate,
 ) -> schemas.PatientRead:
     return await db.patients.update(pk, payload, flush=True)
 
 
 @patients.delete("/{pk}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_patient(db: DatabaseRepositoriesDepends, *, pk: UUID) -> None:
+async def delete_patient(
+    db: DatabaseRepositoriesDepends, *, pk: PatientIdPathParam
+) -> None:
     await db.patients.delete(pk)
 
 
@@ -59,7 +88,8 @@ observations = APIRouter(prefix="/observations", tags=["Observations"])
 async def get_observations(
     service: HealthTrackerServiceDepends,
     *,
-    kinds: Annotated[  # TODO
+    subject_ids: SubjectIdsQueryParam = None,
+    kinds: Annotated[
         list[schemas.CodeKind] | None,
         Query(description="List of observation kinds to filter observations by"),
     ] = None,
@@ -67,18 +97,8 @@ async def get_observations(
         list[schemas.CodeType] | None,
         Query(description="List of codes to filter observations by"),
     ] = None,
-    subject_ids: Annotated[
-        list[UUID] | None,
-        Query(description="List of patient IDs to filter observations by"),
-    ] = None,
-    start: Annotated[
-        AwareDatetime | None,
-        Query(description="Start date of the observation period"),
-    ] = None,
-    end: Annotated[
-        AwareDatetime | None,
-        Query(description="End date of the observation period"),
-    ] = None,
+    start: DatetimeQueryParam = None,
+    end: DatetimeQueryParam = None,
 ) -> schemas.GetObservationsResponse:
     if kinds:
         codes = codes or []
@@ -99,7 +119,7 @@ async def get_observations(
 
 @observations.get("/{pk}")
 async def get_observation(
-    service: HealthTrackerServiceDepends, *, pk: UUID
+    service: HealthTrackerServiceDepends, *, pk: ObservationIdPathParam
 ) -> schemas.ObservationRead:
     return await service.get_observation(pk)
 
@@ -115,14 +135,16 @@ async def create_observation(
 async def update_observation(
     service: HealthTrackerServiceDepends,
     *,
-    pk: UUID,
+    pk: ObservationIdPathParam,
     payload: schemas.ObservationUpdate,
 ) -> schemas.ObservationRead:
     return await service.update_observation(pk, payload)
 
 
 @observations.delete("/{pk}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_observation(service: HealthTrackerServiceDepends, *, pk: UUID) -> None:
+async def delete_observation(
+    service: HealthTrackerServiceDepends, *, pk: ObservationIdPathParam
+) -> None:
     await service.delete_observation(pk)
 
 
@@ -144,7 +166,7 @@ async def get_codeable_concepts(
 
 @concepts.get("/{pk}")
 async def get_codeable_concept(
-    service: HealthTrackerServiceDepends, *, pk: UUID
+    service: HealthTrackerServiceDepends, *, pk: CodeableConceptIdPathParam
 ) -> schemas.CodeableConceptRead:
     return await service.get_codeable_concept(pk)
 
@@ -160,7 +182,7 @@ async def create_codeable_concept(
 async def update_codeable_concept(
     service: HealthTrackerServiceDepends,
     *,
-    pk: UUID,
+    pk: CodeableConceptIdPathParam,
     payload: schemas.CodeableConceptUpdate,
 ) -> schemas.CodeableConceptRead:
     return await service.update_codeable_concept(pk, payload)
@@ -168,7 +190,7 @@ async def update_codeable_concept(
 
 @concepts.delete("/{pk}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_codeable_concept(
-    service: HealthTrackerServiceDepends, *, pk: UUID
+    service: HealthTrackerServiceDepends, *, pk: CodeableConceptIdPathParam
 ) -> None:
     await service.delete_codeable_concept(pk)
 
@@ -184,24 +206,11 @@ score = APIRouter(prefix="/health-score", tags=["Health Score"])
 async def get_health_score(
     service: HealthTrackerServiceDepends,
     *,
-    patient_id: UUID,
-    start: Annotated[
-        AwareDatetime, Query(description="Start date of the observation period")
-    ],
-    end: Annotated[
-        AwareDatetime, Query(description="End date of the observation period")
-    ],
+    patient_id: PatientIdPathParam,
+    start: DatetimeQueryParam = None,
+    end: DatetimeQueryParam = None,
 ) -> schemas.DiagnosticReport:
-    """
-    Calculate and return a health score for a patient.
-
-    The health score is calculated based on:
-    - Number and variety of health observations
-    - Comparison to population averages
-    - Data consistency
-
-    Returns a FHIR-compliant DiagnosticReport.
-    """
+    """Calculate and return a health score in FHIR-compliant DiagnosticReport."""
     return await service.get_health_score(
         schemas.ObservationFilters(
             subject_ids=[patient_id],

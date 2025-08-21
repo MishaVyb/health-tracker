@@ -11,6 +11,7 @@ from app.services.service import HealthTrackerService
 from tests.conftest import TEST_DT
 
 
+@pytest.mark.usefixtures("init_concepts")
 async def test_patient_crud(client: HealthTrackerAdapter) -> None:
     create_payload = schemas.PatientCreate(
         name=[schemas.HumanName(family="INITIAL_FAMILY", given=["INITIAL_GIVEN"])],
@@ -36,10 +37,30 @@ async def test_patient_crud(client: HealthTrackerAdapter) -> None:
     assert result == await client.get_patient(result.id)
     assert result == (await client.get_patients()).items[0]
 
+    # add observation:
+    codeable_concepts = (await client.get_codeable_concepts()).items
+    code = codeable_concepts[0]
+    create_payload = schemas.ObservationCreate(
+        status=schemas.Status.PRELIMINARY,
+        effective_datetime_start=TEST_DT,
+        effective_datetime_end=TEST_DT,
+        code_id=code.id,
+        value_quantity=100,
+        value_quantity_unit="mg/dL",
+        subject_id=result.id,
+    )
+    observation = await client.create_observation(create_payload)
+
+    # delete patient:
     await client.delete_patient(result.id)
     with pytest.raises(HTTPNotFoundError):
         assert await client.get_patient(result.id)
     assert (await client.get_patients()).items == []
+
+    # check observation has been deleted:
+    with pytest.raises(HTTPNotFoundError):
+        assert await client.get_observation(observation.id)
+    assert (await client.get_observations()).items == []
 
 
 async def test_codeable_concept_crud(client: HealthTrackerAdapter) -> None:

@@ -89,7 +89,7 @@ CodeType = Annotated[
         min_length=1,
         max_length=100,
         description="Unique code.",
-        examples=["4596-3", "29463-7"],
+        examples=["93832-4"],
     ),
 ]
 
