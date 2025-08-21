@@ -1,9 +1,9 @@
 import logging
-from pathlib import Path
 
 from app.adapter.adapter import HealthTrackerAdapter
-from app.adapter.external import ExternalFHIRAdapter, ExternalFHIRSourceJSONFiles
+from app.adapter.external import ExternalFHIRAdapter
 from app.services.integration import HealthTrackerIntegration
+from tests.conftest import TEST_EXTERNAL_FHIR_SOURCE
 
 logger = logging.getLogger("conftest")
 
@@ -11,12 +11,7 @@ logger = logging.getLogger("conftest")
 async def test_integration(client: HealthTrackerAdapter) -> None:
     service = HealthTrackerIntegration(
         client=client,
-        external=ExternalFHIRAdapter(
-            source=ExternalFHIRSourceJSONFiles(
-                patients=Path("data/patients.json"),
-                observations=Path("data/observations.json"),
-            ),
-        ),
+        external=ExternalFHIRAdapter(source=TEST_EXTERNAL_FHIR_SOURCE),
         logger=logger,
         strict=True,
     )

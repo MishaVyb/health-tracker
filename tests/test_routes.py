@@ -56,12 +56,12 @@ async def test_codeable_concept_crud(client: HealthTrackerAdapter) -> None:
     update_payload = schemas.CodeableConceptUpdate(
         text="NEW_TEXT",
     )
-    result = await client.update_codeable_concept(result.id, update_payload)
-    assert result.text == update_payload.text
-    assert result.coding[0].code == create_payload.coding[0].code  # left unchanged
+    res = await client.update_codeable_concept(result.id, update_payload)
+    assert res.text == update_payload.text
+    assert res.coding[0].code == create_payload.coding[0].code  # left unchanged
 
-    assert result == await client.get_codeable_concept(result.id)
-    assert result == (await client.get_codeable_concepts()).items[0]
+    assert res == await client.get_codeable_concept(res.id)
+    assert res == (await client.get_codeable_concepts()).items[0]
 
     # 4xx errors:
     with pytest.raises(HTTPNotFoundError):

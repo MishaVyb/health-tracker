@@ -56,12 +56,7 @@ class AppSettings(BaseSettings):
     def API_DOCS_URL(self) -> str:
         return f"{self.API_PREFIX}/docs"
 
-    SERVICE_SCORE_COVERAGE_WEIGHT: float = 0.25
-    SERVICE_SCORE_COVERAGE_FACTOR: float = 0.25
-    SERVICE_SCORE_VALUE_QUALITY_WEIGHT: float = 0.35
     SERVICE_SCORE_Z_SCALING_FACTOR: float = 20.0
-
-    HTTP_SESSION_TIMEOUT: float = 59.0  # seconds
 
     DATABASE_DRIVER: AsyncDatabaseDriver
     DATABASE_USER: SecretStr
@@ -155,10 +150,6 @@ class AppSettings(BaseSettings):
                     "level": self.LOG_LEVEL,
                     "handlers": self.LOG_HANDLERS,
                 },
-                "dotenv": {
-                    "level": self.LOG_LEVEL_DOTENV,
-                    "handlers": self.LOG_HANDLERS,
-                },
                 "uvicorn": {
                     "handlers": self.LOG_HANDLERS,
                     "level": self.LOG_LEVEL,
@@ -184,6 +175,7 @@ class AppSettings(BaseSettings):
         return config
 
     def __repr_args__(self):
+        # represent only the fields that are set
         for k, v in super().__repr_args__():
             if (
                 k in self.model_fields_set
@@ -207,6 +199,8 @@ class IntegrationSettings(BaseSettings):
         frozen=True,
         extra="allow",
     )
+
+    HTTP_SESSION_TIMEOUT: float = 59.0  # seconds
 
     HEALTH_TRACKER_BASE_URL: str
     HEALTH_TRACKER_TOKEN: str | None = None

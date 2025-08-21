@@ -1,7 +1,17 @@
 import time
 from dataclasses import dataclass, field
 from functools import cache
-from typing import Any, ClassVar, Generic, Sequence, Type, TypeAlias, TypeVar
+from typing import (
+    Any,
+    ClassVar,
+    Generic,
+    Sequence,
+    Type,
+    TypeAlias,
+    TypeVar,
+    cast,
+    overload,
+)
 
 from pydantic import BaseModel as BaseSchema
 from pydantic import TypeAdapter
@@ -58,15 +68,13 @@ class SQLAlchemyRepositoryBase(
         return set(i.all_orm_descriptors.keys()) - set(i.relationships.keys())
 
     async def get(self, pk: PrimaryKeyType, *, cached: bool = False) -> SchemaType:
-        """Get one instance by PK. Using cached or querying database."""
+        """Get one instance by PK."""
         ctx = self.SelectContext(extra_filters=dict(id=pk), cached=cached)
         instance = await self._get_instance_by_id(pk, cached=cached)
         return self._use_result(instance, ctx=ctx)
 
     async def get_one(self, *, cached: bool = False, **filters) -> SchemaType:
-        """
-        Get one instance by filters/clauses.
-        """
+        """Get one instance by filters/clauses."""
         ctx = self.SelectContext(
             extra_filters=filters,
             cached=cached,
@@ -76,24 +84,15 @@ class SQLAlchemyRepositoryBase(
         return self._use_result(instance, ctx=ctx)
 
     async def get_one_or_none(
-        self,
-        *,
-        cached: bool = False,
-        **filters,
+        self, *, cached: bool = False, **filters
     ) -> SchemaType | None:
         try:
             return await self.get_one(cached=cached, **filters)
         except NoResultFound:
             return None
 
-    async def get_all(
-        self,
-        *,
-        cached: bool = False,
-    ) -> list[SchemaType]:
-        return await self.get_where(
-            cached=cached,
-        )
+    async def get_all(self, *, cached: bool = False) -> list[SchemaType]:
+        return await self.get_where(cached=cached)
 
     async def get_where(
         self,
@@ -103,9 +102,7 @@ class SQLAlchemyRepositoryBase(
         clauses: Sequence[ColumnExpressionArgument] = (),
         **extra_filters,
     ) -> list[SchemaType]:
-        """
-        Get many instances using filters.
-        """
+        """Get many instances by filters/clauses."""
         ctx = self.SelectContext(
             filters_schema=filters_schema,
             extra_filters=extra_filters,
@@ -117,10 +114,7 @@ class SQLAlchemyRepositoryBase(
         return self._use_results_list(items, ctx=ctx)
 
     async def _get_instance_by_id(
-        self,
-        pk: PrimaryKeyType,
-        *,
-        cached: bool = False,
+        self, pk: PrimaryKeyType, *, cached: bool = False
     ) -> ModelType:
         if cached:
             return await self._session.get_one(self._model, pk)
@@ -134,7 +128,7 @@ class SQLAlchemyRepositoryBase(
         t1 = time.time()
         r = await self._session.execute(stm)
         instance = r.scalar_one()
-        self._logger.info("[DATABASE] Got: %s [%.3f]", instance, time.time() - t1)
+        self._logger.info("Got: %s [%.3f]", instance, time.time() - t1)
         return instance
 
     async def _get_instances_list(
@@ -143,15 +137,7 @@ class SQLAlchemyRepositoryBase(
         t1 = time.time()
         res = await self._session.execute(stm)
         items = res.scalars().all()
-        self._logger.info(
-            "[DATABASE] Got: %s [%.3f]",
-            (
-                [str(i) for i in items]
-                if 0 < len(items) and len(items) < 5
-                else f"{len(items)} {self} items"
-            ),
-            time.time() - t1,
-        )
+        self._logger.info("Got: %s %s items [%.3f]", len(items), self, time.time() - t1)
         return items
 
     async def create(
@@ -162,11 +148,13 @@ class SQLAlchemyRepositoryBase(
     ) -> SchemaType:
         data = self._use_payload_create(payload, **extra_values)
         instance = self._model(**data)
-        self._logger.debug("[DATABASE] Add and flush: %s", instance)
+        self._logger.debug("Add and flush: %s", instance)
         self._session.add(instance)
         await self._session.flush([instance])
         if refresh:
-            instance = await self._get_instance_by_id(instance.id, cached=False)
+            instance = await self._get_instance_by_id(
+                cast(PrimaryKeyType, instance.id), cached=False
+            )
         return self._use_result(instance)
 
     async def pending_create(
@@ -176,7 +164,7 @@ class SQLAlchemyRepositoryBase(
     ) -> None:
         data = self._use_payload_create(payload, **extra_values)
         instance = self._model(**data)
-        self._logger.debug("[DATABASE] Add: %s", instance)
+        self._logger.debug("Add: %s", instance)
         self._session.add(instance)
 
     async def update(
@@ -191,14 +179,16 @@ class SQLAlchemyRepositoryBase(
         if not data:
             return self._use_result(instance)
 
-        self._logger.debug("[DATABASE] Update and flush: %s", instance)
+        self._logger.debug("Update and flush: %s", instance)
         for k, v in data.items():
             setattr(instance, k, v)
 
         await self._session.flush([instance])
 
         if refresh:
-            instance = await self._get_instance_by_id(instance.id, cached=False)
+            instance = await self._get_instance_by_id(
+                cast(PrimaryKeyType, instance.id), cached=False
+            )
         return self._use_result(instance)
 
     async def pending_update(
@@ -212,14 +202,14 @@ class SQLAlchemyRepositoryBase(
         if not data:
             return
 
-        self._logger.debug("[DATABASE] Update: %s", instance)
+        self._logger.debug("Update: %s", instance)
         for k, v in data.items():
             setattr(instance, k, v)
 
     async def delete(self, pk: PrimaryKeyType, flush: bool = False) -> None:
         instance = await self._get_instance_by_id(pk)
 
-        self._logger.debug("[DATABASE] Delete: %s", instance)
+        self._logger.debug("Delete: %s", instance)
         await self._session.delete(instance)
         if flush:
             await self._session.flush([instance])
@@ -233,7 +223,7 @@ class SQLAlchemyRepositoryBase(
         stm = self._build_select_statement(ctx=ctx)
         instances = await self._get_instances_list(stm, ctx=ctx)
         for instance in instances:
-            self._logger.debug("[DATABASE] Delete: %s", instance)
+            self._logger.debug("Delete: %s", instance)
             await self._session.delete(instance)
         if flush:
             await self._session.flush(instances)
@@ -301,7 +291,7 @@ class SQLAlchemyRepositoryBase(
         *,
         ctx: SelectContext,
     ) -> Select:
-        self._logger.info("[DATABASE] Querying %s %s. ", self, ctx)
+        self._logger.info("Querying %s %s. ", self, ctx)
 
         stm = stm if stm is not None else select(self._model)
         stm = self._apply_filters(stm, ctx=ctx)
@@ -334,25 +324,25 @@ class SQLAlchemyRepositoryBase(
     def _apply_order(self, stm: Select, *, ctx: SelectContext) -> Select:
         return stm.order_by(self._model.id)
 
-    # @overload
-    # def _use_result(
-    #     self,
-    #     instance: ModelType,
-    #     *,
-    #     ctx: SelectContext | None = None,
-    #     adapter: None = None,
-    # ) -> SchemaType:
-    #     ...
+    @overload
+    def _use_result(
+        self,
+        instance: ModelType,
+        *,
+        ctx: SelectContext | None = None,
+        adapter: None = None,
+    ) -> SchemaType:
+        ...
 
-    # @overload
-    # def _use_result(
-    #     self,
-    #     instance: Sequence[ModelType],
-    #     *,
-    #     ctx: SelectContext | None = None,
-    #     adapter: TypeAdapter[list[SchemaType]],
-    # ) -> list[SchemaType]:
-    #     ...
+    @overload
+    def _use_result(
+        self,
+        instance: Sequence[ModelType],
+        *,
+        ctx: SelectContext | None = None,
+        adapter: TypeAdapter[list[SchemaType]],
+    ) -> list[SchemaType]:
+        ...
 
     def _use_result(
         self,

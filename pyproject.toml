@@ -39,7 +39,7 @@ addopts = [
     "--failed-first",
     "--strict-markers",
     "--show-capture=no",
-    "--disable-warnings", # ???
+    "--disable-warnings",
 ]
 
 [tool.black]
@@ -52,7 +52,7 @@ line_length = 88
 [tool.mypy]
 python_version = '3.13'
 ignore_missing_imports = true
-strict = false # TODO: enable strict mode
+strict = false
 show_error_codes = true
 
 allow_redefinition = true
@@ -63,9 +63,8 @@ disable_error_code = [
     "assignment",
     "misc",
     "override",
-    # #https://mypy.readthedocs.io/en/stable/error_code_list.html#require-annotation-if-variable-type-is-unclear-var-annotated
-    # "var-annotated", # allows: foo = [], bar = {}
-    # "truthy-bool",   # allows for optional pydantic fields declared via ModelConstructor
+    "no-any-return",
+    "var-annotated", # allows: foo = [], bar = {}
 ]
 
 [tool.autoflake]

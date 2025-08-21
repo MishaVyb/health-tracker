@@ -18,14 +18,14 @@ def setup_logging(settings: AppSettings) -> None:
 
 
 def setup(settings: AppSettings | None = None) -> HealthTrackerAPP:
-    settings = settings or AppSettings()
+    settings = settings or AppSettings()  # type: ignore[call-arg]
     setup_logging(settings)
     logger.info("Run app worker [%s]", click.style(os.getpid(), fg="cyan"))
     return HealthTrackerAPP.startup(settings)
 
 
 def main() -> None:
-    settings = AppSettings()
+    settings = AppSettings()  # type: ignore[call-arg]
 
     # NOTE: setup logging for main process;
     # later it will be initialized for each worker process as well;
@@ -34,7 +34,6 @@ def main() -> None:
     logger.info("Settings: %s", settings)
     logger.debug("Unprocessed env variables: %s", settings.model_extra)
 
-    # if settings.APP_WORKERS or settings.APP_RELOAD:
     uvicorn.run(
         "app.main:setup",
         host=settings.APP_HOST,

@@ -1,8 +1,8 @@
 import uuid
 import warnings
-from typing import Any, Generic, TypeVar
+from typing import Generic, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 # enable pydantic warning as error to not miss type mismatch
@@ -19,6 +19,7 @@ class BaseSchema(BaseModel):
     )
 
     def __repr_args__(self):
+        # represent only the fields that are set
         for k, v in super().__repr_args__():
             if k in self.model_fields_set and self.model_fields[k].repr:
                 yield (k, v)
@@ -41,18 +42,6 @@ _T = TypeVar("_T", bound=BaseSchema)
 
 class ItemsResponseBase(BaseSchema, Generic[_T]):
     items: list[_T]
-
-
-# ???
-class DictModel(RootModel[dict[str, Any]]):
-    def __init__(self, **kwargs: Any) -> None:
-        super().__init__(root=kwargs)
-
-    def __getitem__(self, key: str) -> Any:
-        return self.root[key]
-
-    def __setitem__(self, key: str, value: Any) -> None:
-        self.root[key] = value
 
 
 EMPTY_PAYLOAD = BaseSchema()

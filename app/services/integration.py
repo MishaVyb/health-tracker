@@ -1,4 +1,5 @@
 from logging import Logger
+from typing import Any
 from uuid import UUID
 
 from pydantic import TypeAdapter, ValidationError
@@ -9,6 +10,10 @@ from app.dependencies.exceptions import HTTPException
 from app.schemas import external, schemas
 
 IdAdapter = TypeAdapter(UUID)
+"""
+Health Tracker uses UUIDs for patient and observation IDs.
+It might be changed to strings in the future in order to have full FHIR compatibility.
+"""
 
 
 class HealthTrackerIntegration:
@@ -96,76 +101,81 @@ class HealthTrackerIntegration:
         external_observation: external.Observation,
     ) -> None:
         pk = IdAdapter.validate_python(external_observation.id)
-
         if pk in observations:
             self.logger.warning(f"Observation exists: {pk}. Updating is not supported.")
+            return
 
-        else:
-            code: external.CodeableConcept = external_observation.code
-            if not code.coding:
-                self.logger.warning(f"Observation {pk} has no coding. Skipping.")
-                return
+        code: external.CodeableConcept = external_observation.code
+        if not code.coding:
+            self.logger.warning(f"Observation {pk} has no coding. Skipping.")
+            return
 
-            concept_codes = tuple(c.code for c in code.coding)  # type: ignore[attr-defined]
-            if not (concept := concepts.get(concept_codes)):
-                self.logger.info(f"Creating codeable concept: {code.text}")
-                payload = schemas.CodeableConceptCreate.model_validate(
-                    code.model_dump()
-                )
-                concept = await self.client.create_codeable_concept(payload)
-                concepts[concept_codes] = concept
+        concept_codes = tuple(c.code for c in code.coding)  # type: ignore[attr-defined]
+        if not (concept := concepts.get(concept_codes)):
+            self.logger.info(f"Creating codeable concept: {code.text}")
+            payload = schemas.CodeableConceptCreate.model_validate(code.model_dump())
+            concept = await self.client.create_codeable_concept(payload)
+            concepts[concept_codes] = concept
 
-            self.logger.info(f"Creating observation {pk}")
+        self.logger.info(f"Processing observation {pk}")
+        data = self.integrate_observation_data(
+            external_observation, concept, patients_map
+        )
+        if data is None:
+            return
 
-            # build payload with relationships as foreign keys:
-            data = external_observation.model_dump(
-                exclude={"subject", "code", "category"}
+        self.logger.info(f"Creating observation {pk}")
+        payload = schemas.ObservationCreate.model_validate(data)
+        await self.client.create_observation(payload)
+
+    def integrate_observation_data(
+        self,
+        source: external.Observation,
+        concept: schemas.CodeableConceptRead,
+        patients_map: dict[UUID, schemas.PatientRead],
+    ) -> dict[str, Any] | None:
+        # build payload with relationships as foreign keys:
+        data = source.model_dump(exclude={"subject", "code", "category"})
+        data["code_id"] = concept.id
+
+        subject: external.Reference = source.subject
+        subject_id = IdAdapter.validate_python(subject.reference)
+        data["subject_id"] = subject_id
+
+        if subject_id not in patients_map:
+            self.logger.warning(
+                f"Observation {source.id} has unknown subject {subject_id}. Skipping."
             )
-            data["code_id"] = concept.id
+            return None
 
-            subject: external.Reference = external_observation.subject
-            subject_id = IdAdapter.validate_python(subject.reference)
-            data["subject_id"] = subject_id
+        # map FHIR fields to internal schema
+        # handle effective datetime
+        if source.effectiveDateTime:
+            effective_dt = source.effectiveDateTime
+            data["effectiveDatetimeStart"] = effective_dt
+            data["effectiveDatetimeEnd"] = effective_dt
+        elif source.effectivePeriod:
+            data["effectiveDatetimeStart"] = source.effectivePeriod.start
+            data["effectiveDatetimeEnd"] = source.effectivePeriod.end
+        else:
+            # use issued time as fallback
+            data["effectiveDatetimeStart"] = source.issued
+            data["effectiveDatetimeEnd"] = source.issued
 
-            if subject_id not in patients_map:
-                self.logger.warning(
-                    f"Observation {pk} has unknown subject {subject_id}. Skipping."
-                )
-                return
+        # handle value quantity
+        if source.valueQuantity:
+            data["valueQuantity"] = source.valueQuantity.value
+            data["valueQuantityUnit"] = source.valueQuantity.unit
+        elif source.component:
+            # for composite observations like blood pressure, use first component
+            first_component: external.ObservationComponent = source.component[0]
+            if first_component.valueQuantity:
+                data["valueQuantity"] = first_component.valueQuantity.value
+                data["valueQuantityUnit"] = first_component.valueQuantity.unit
+        else:
+            self.logger.warning(
+                f"Observation {source.id} has no value quantity. Skipping."
+            )
+            return None
 
-            # map FHIR fields to internal schema
-            # handle effective datetime
-            if external_observation.effectiveDateTime:
-                effective_dt = external_observation.effectiveDateTime
-                data["effectiveDatetimeStart"] = effective_dt
-                data["effectiveDatetimeEnd"] = effective_dt
-            elif external_observation.effectivePeriod:
-                data[
-                    "effectiveDatetimeStart"
-                ] = external_observation.effectivePeriod.start
-                data["effectiveDatetimeEnd"] = external_observation.effectivePeriod.end
-            else:
-                # use issued time as fallback
-                data["effectiveDatetimeStart"] = external_observation.issued
-                data["effectiveDatetimeEnd"] = external_observation.issued
-
-            # handle value quantity
-            if external_observation.valueQuantity:
-                data["valueQuantity"] = external_observation.valueQuantity.value
-                data["valueQuantityUnit"] = external_observation.valueQuantity.unit
-            elif external_observation.component:
-                # for composite observations like blood pressure, use first component
-                first_component: external.ObservationComponent = (
-                    external_observation.component[0]
-                )
-                if first_component.valueQuantity:
-                    data["valueQuantity"] = first_component.valueQuantity.value
-                    data["valueQuantityUnit"] = first_component.valueQuantity.unit
-            else:
-                self.logger.warning(
-                    f"Observation {pk} has no value quantity. Skipping."
-                )
-                return
-
-            payload = schemas.ObservationCreate.model_validate(data)
-            await self.client.create_observation(payload)
+        return data

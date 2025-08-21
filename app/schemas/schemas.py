@@ -43,6 +43,13 @@ class HumanGender(StrEnum):
 
 
 class Patient(BaseSchema):
+    """
+    Patient schema.
+
+    Simplified version of FHIR Patient resource.
+    https://www.hl7.org/fhir/patient.html
+    """
+
     name: list[HumanName] = []
     gender: HumanGender | None = None
 
@@ -88,6 +95,13 @@ CodeType = Annotated[
 
 
 class Coding(BaseSchema):
+    """
+    Coding schema.
+
+    Simplified version of FHIR Coding data type.
+    https://www.hl7.org/fhir/datatypes-definitions.html#CodeableConcept.coding
+    """
+
     code: CodeType
     system: str
     display: str | None = None
@@ -104,6 +118,13 @@ class CodingRead(ReadSchemaBase, Coding):
 
 
 class CodeableConcept(BaseSchema):
+    """
+    CodeableConcept schema.
+
+    Simplified version of FHIR CodeableConcept data type.
+    https://www.hl7.org/fhir/datatypes.html#CodeableConcept
+    """
+
     text: str
     coding: list[Coding] = []
 
@@ -139,6 +160,13 @@ class Status(StrEnum):
 
 
 class Observation(BaseSchema):
+    """
+    Observation schema.
+
+    Simplified version of FHIR Observation resource.
+    https://www.hl7.org/fhir/observation.html
+    """
+
     status: Status
 
     effective_datetime_start: AwareDatetime
@@ -191,6 +219,14 @@ class ObservationFilters(BaseSchema):
     start: AwareDatetime | None = None
     end: AwareDatetime | None = None
 
+    @property
+    def target_patient(self) -> uuid.UUID:
+        if not self.subject_ids:
+            raise ValueError("No subject IDs provided.")
+        if len(self.subject_ids) > 1:
+            raise ValueError("Multiple patients are not supported yet.")
+        return self.subject_ids[0]
+
 
 ########################################################################################
 # Diagnostic Report Schemas
@@ -213,10 +249,14 @@ class ObservationQuantityStat(BaseSchema):
 
 
 class PatientScoreStat(BaseSchema):
-    coding: Coding
+    """Patient/Population statistics for an specific observation type."""
 
+    coding: Coding
+    """Observation code."""
     population_stats: ObservationQuantityStat
+    """Population statistics for the observation type."""
     patient_stats: ObservationQuantityStat
+    """Patient statistics for the observation type."""
     patient_score: Annotated[float, Field(ge=0, le=100)]
     """Patient score for this observation type."""
 
@@ -256,6 +296,13 @@ class Period(BaseSchema):
 
 
 class DiagnosticReport(BaseSchema):
+    """
+    DiagnosticReport schema.
+
+    Simplified version of FHIR DiagnosticReport resource.
+    https://www.hl7.org/fhir/diagnosticreport.html
+    """
+
     id: str | None = None
     status: Status
     code: CodeableConcept

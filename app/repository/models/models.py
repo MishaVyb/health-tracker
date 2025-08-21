@@ -10,19 +10,39 @@ from .base import Base
 
 
 class Patient(Base):
+    """
+    Patient model.
+
+    Simplified version of FHIR Patient resource.
+    https://www.hl7.org/fhir/patient.html
+    """
+
     name: Mapped[list[dict]]
     gender: Mapped[str | None]
 
 
 class Coding(Base):
+    """
+    Coding model.
+
+    Simplified version of FHIR Coding data type.
+    https://www.hl7.org/fhir/datatypes-definitions.html#CodeableConcept.coding
+    """
+
     system: Mapped[str]
     code: Mapped[str] = mapped_column(unique=True)
     display: Mapped[str | None]
 
 
 class CodeableConcept(Base):
+    """
+    CodeableConcept model.
+
+    Simplified version of FHIR CodeableConcept data type.
+    https://www.hl7.org/fhir/datatypes.html#CodeableConcept
+    """
+
     coding: Mapped[list[Coding]] = relationship(  # many-to-many
-        # back_populates="resources",
         secondary=lambda: CodeableConceptToCoding.__table__,
         viewonly=True,
         order_by=(Coding.system, Coding.code),
@@ -31,6 +51,13 @@ class CodeableConcept(Base):
 
 
 class Observation(Base):
+    """
+    Observation model.
+
+    Simplified version of FHIR Observation resource.
+    https://www.hl7.org/fhir/observation.html
+    """
+
     status: Mapped[str]
     effective_datetime_start: Mapped[datetime]
     effective_datetime_end: Mapped[datetime]
@@ -56,7 +83,7 @@ class Observation(Base):
 
 
 class CodeableConceptToCoding(Base):
-    """Association table for CodeableConcept to Coding"""
+    """Association table for CodeableConcept to Coding relationship"""
 
     codeable_concept_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey(CodeableConcept.id), index=True
@@ -66,7 +93,7 @@ class CodeableConceptToCoding(Base):
 
 
 class CodeableConceptToObservation(Base):
-    """Association table for CodeableConcept to Observation"""
+    """Association table for CodeableConcept to Observation relationship"""
 
     codeable_concept_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey(CodeableConcept.id), index=True

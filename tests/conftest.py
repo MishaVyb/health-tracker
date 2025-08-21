@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import AsyncGenerator, Literal
 
 import pytest
 from asgi_lifespan import LifespanManager
@@ -22,7 +23,7 @@ logger = logging.getLogger("conftest")
 
 
 @pytest.fixture(scope="session")
-def anyio_backend():
+def anyio_backend() -> Literal["asyncio"]:
     return "asyncio"
 
 
@@ -42,7 +43,7 @@ def settings() -> AppSettings:
 
 
 @pytest.fixture
-async def app(settings: AppSettings):
+async def app(settings: AppSettings) -> AsyncGenerator[HealthTrackerAPP, None]:
     app = setup(settings)
     async with LifespanManager(app):
         yield app
@@ -54,11 +55,11 @@ def engine(app: HealthTrackerAPP) -> AsyncEngine:
 
 
 @pytest.fixture
-async def setup_tables(engine: AsyncEngine):
+async def setup_tables(engine: AsyncEngine) -> AsyncGenerator[None, None]:
     try:
         async with engine.begin() as conn:
 
-            def _run(conn: Connection):
+            def _run(conn: Connection) -> None:
                 Base.metadata.create_all(conn, checkfirst=True)
 
             await conn.run_sync(_run)
@@ -68,14 +69,11 @@ async def setup_tables(engine: AsyncEngine):
             await conn.run_sync(Base.metadata.drop_all, checkfirst=True)
 
 
-# @pytest.fixture
-# async def session(setup_tables: None, app: HealthTrackerAPP):
-#     async with app.state.session_maker.begin() as session:
-#         yield session
-
-
-@pytest.fixture  # ??? rename to adapter
-async def client(app: HealthTrackerAPP, setup_tables: None):
+@pytest.fixture
+async def client(
+    app: HealthTrackerAPP, setup_tables: None
+) -> AsyncGenerator[HealthTrackerAdapter, None]:
+    # using HealthTrackerAdapter as a client for testing purposes
     async with AsyncClient(
         transport=ASGITransport(app), base_url="http://testserver"
     ) as session:
@@ -93,6 +91,10 @@ TEST_DT = datetime(
 TEST_PATIENT = schemas.PatientCreate(
     name=[schemas.HumanName(family="TEST_PATIENT_1")],
     gender=schemas.HumanGender.MALE,
+)
+TEST_EXTERNAL_FHIR_SOURCE = ExternalFHIRSourceJSONFiles(
+    patients=Path("data/patients.json"),
+    observations=Path("data/observations.json"),
 )
 
 
@@ -112,12 +114,7 @@ async def init_concepts(client: HealthTrackerAdapter) -> None:
 async def init_external_data(client: HealthTrackerAdapter) -> None:
     service = HealthTrackerIntegration(
         client=client,
-        external=ExternalFHIRAdapter(
-            source=ExternalFHIRSourceJSONFiles(
-                patients=Path("data/patients.json"),
-                observations=Path("data/observations.json"),
-            ),
-        ),
+        external=ExternalFHIRAdapter(source=TEST_EXTERNAL_FHIR_SOURCE),
         logger=logger,
         strict=True,
     )

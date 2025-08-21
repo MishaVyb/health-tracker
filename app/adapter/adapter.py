@@ -138,7 +138,7 @@ class HealthTrackerAdapter(HTTPAdapterBase):
         )
 
     async def create_codeable_concept(
-        self, payload: schemas.CodeableConceptCreate
+        self, payload: schemas.CodeableConcept | schemas.CodeableConceptCreate
     ) -> schemas.CodeableConceptRead:
         return await self._call_service(
             HTTPMethod.POST,
@@ -151,7 +151,7 @@ class HealthTrackerAdapter(HTTPAdapterBase):
         self,
         id: UUID,
         payload: schemas.CodeableConceptUpdate,
-    ) -> schemas.ObservationRead:
+    ) -> schemas.CodeableConceptRead:
         return await self._call_service(
             HTTPMethod.PATCH,
             f"/codeable-concepts/{id}",

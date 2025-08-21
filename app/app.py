@@ -46,7 +46,7 @@ class HealthTrackerAPP(FastAPI):
     state: State
 
     @classmethod
-    def startup(cls: Type[HealthTrackerAPP], settings: AppSettings):
+    def startup(cls: Type[HealthTrackerAPP], settings: AppSettings) -> HealthTrackerAPP:
         app = cls(
             title=settings.APP_NAME,
             description=settings.APP_DESCRIPTION,

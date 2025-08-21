@@ -22,6 +22,13 @@ from app.schemas.schemas import Attachment, DiagnosticReport, Reference
 
 
 class HealthTrackerService:
+    """
+    Service for Health Tracker APP business logic.
+
+    - handles CRUD operations for patients, codeable concepts and observations.
+    - calculates health score for a patient.
+    """
+
     def __init__(
         self,
         db: DatabaseRepositoriesDepends,
@@ -156,11 +163,11 @@ class HealthTrackerService:
     async def get_health_score(
         self, filters: schemas.ObservationFilters
     ) -> DiagnosticReport:
-        patient = await self.get_patient(filters.subject_ids[0])
+        patient = await self.get_patient(filters.target_patient)
         patient_obs = await self.get_observations(filters)
         if not patient_obs:
             raise HTTPBadRequestError(
-                detail=f"No observations found for patient {filters.subject_ids}"
+                detail=f"No observations found for patient {filters.target_patient}"
             )
 
         other_obs = await self.db.observations.get_where(
@@ -304,13 +311,13 @@ class HealthTrackerService:
         conclusion = self._compose_conclusion(filters, patient, metrics, total_score)
 
         diagnostic_report = DiagnosticReport(
-            id=f"health-score-{filters.subject_ids[0]}",
+            id=f"health-score-{filters.target_patient}",
             status=schemas.Status.FINAL,
             code=schemas.CodeableConcept(
                 coding=[HEALTH_SCORE_PANEL_CODING],
                 text="Comprehensive Health Score Assessment",
             ),
-            subject=Reference(reference=str(filters.subject_ids[0]), type="Patient"),
+            subject=Reference(reference=str(filters.target_patient), type="Patient"),
             effective_period=schemas.Period(start=filters.start, end=filters.end),
             issued=datetime.now(timezone.utc),
             result=[

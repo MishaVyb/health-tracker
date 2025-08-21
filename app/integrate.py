@@ -12,7 +12,9 @@ logger = logging.getLogger("app.integrate")
 
 
 async def run() -> None:
-    settings = IntegrationSettings()
+    """Run external FHIR data integration."""
+
+    settings = IntegrationSettings()  # type: ignore[call-arg]
     logger.info("Run integration. Settings: %s", settings)
 
     async with httpx.AsyncClient(
@@ -22,6 +24,7 @@ async def run() -> None:
             if settings.HEALTH_TRACKER_TOKEN
             else None
         ),
+        timeout=settings.HTTP_SESSION_TIMEOUT,
     ) as client:
         service = HealthTrackerIntegration(
             client=HealthTrackerAdapter(client),

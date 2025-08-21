@@ -7,9 +7,10 @@ from sqlalchemy import Select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.orm.interfaces import ORMOption
 
+from app.schemas import schemas
 from app.schemas.base import BaseSchema
 
-from . import models, schemas
+from . import models
 from .base import SQLAlchemyRepositoryBase
 
 
@@ -153,39 +154,6 @@ class DatabaseRepositories:
 
     concept_to_code: Annotated[CodeableConceptToCodeRepo, Depends()]
     observation_to_concept: Annotated[ObservationToCodeableConceptRepo, Depends()]
-
-    # def __post_init__(self) -> None:
-    #     for repo in self.repositories:
-    #         repo.db = self
-
-    # @classmethod
-    # def construct(
-    #     cls,
-    #     request: ObjectiveRequest,
-    #     session: AsyncSession,
-    #     app: ObjectiveAPP,
-    #     settings: AppSettings,
-    #     logger: Logger,
-    # ) -> Self:
-    #     # storage shared between all repositories for single session
-    #     storage = StrongInstanceIdentityMap(session)
-    #     return cls(
-    #         # SQLAlchemyRepositories:
-    #         **{
-    #             field.name: field.type(
-    #                 request=request,
-    #                 session=session,
-    #                 storage=storage,
-    #                 logger=logger,
-    #                 app=app,
-    #                 settings=settings,
-    #             )
-    #             for field in fields(cls)
-    #             if field.name != "users"
-    #         },
-    #         # other:
-    #         users=UserRepo(session=session),
-    #     )
 
     @property
     def repositories(self) -> list[SQLAlchemyRepositoryBase]:

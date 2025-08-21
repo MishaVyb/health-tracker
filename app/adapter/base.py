@@ -42,7 +42,7 @@ class HTTPAdapterBase:
         if self._api_prefix:
             url = url.copy_with(path=str(self._api_prefix) + str(url.path))
         if self._base_url and not self._client.base_url:
-            url = self._base_url.join(url)
+            url = httpx.URL(self._base_url).join(url)
         return url
 
     def _use_params(
@@ -71,7 +71,7 @@ class HTTPAdapterBase:
         params: BaseModel | QueryParamTypes | None = None,
         payload: BaseModel | None = None,
         response_schema: Type[_TSchema],  # overload reason
-        **other_request_kwargs,
+        **other_request_kwargs: Any,
     ) -> _TSchema:
         """Normalize request options. Parse response."""
 
@@ -84,7 +84,7 @@ class HTTPAdapterBase:
         params: BaseModel | QueryParamTypes | None = None,
         payload: BaseModel | None = None,
         response_schema: Type[_T],  # overload reason
-        **other_request_kwargs,
+        **other_request_kwargs: Any,
     ) -> _T:
         """Normalize request options. Parse response."""
 
@@ -97,7 +97,7 @@ class HTTPAdapterBase:
         params: BaseModel | QueryParamTypes | None = None,
         payload: BaseModel | None = None,
         response_schema: TypeAdapter[_T],  # overload reason
-        **other_request_kwargs,
+        **other_request_kwargs: Any,
     ) -> _T:
         """Normalize request options. Parse response."""
 
@@ -110,7 +110,7 @@ class HTTPAdapterBase:
         params: BaseModel | QueryParamTypes | None = None,
         payload: BaseModel | None = None,
         response_schema: None = None,  # overload reason
-        **other_request_kwargs,
+        **other_request_kwargs: Any,
     ) -> None:
         """Normalize request options. No content response."""
 
@@ -127,7 +127,7 @@ class HTTPAdapterBase:
         params: BaseModel | QueryParamTypes | None = None,
         payload: BaseModel | None = None,
         response_schema: Any,  # overload reason
-        **other_request_kwargs,
+        **other_request_kwargs: Any,
     ) -> Any:
         """Normalize request options. No content response."""
 
@@ -140,7 +140,7 @@ class HTTPAdapterBase:
         payload: BaseModel | None = None,
         response_schema: Any | None = None,
         validation_context: dict[str, Any] | None = None,
-        **other_request_kwargs,
+        **other_request_kwargs: Any,
     ) -> _TSchema | _T | None:
         response_with_content = True if response_schema else False
 
@@ -189,7 +189,7 @@ class HTTPAdapterBase:
         response_with_content: bool,
         params: QueryParamTypes | None = None,
         data: str | bytes | None = None,
-        **request_kwargs,
+        **request_kwargs: Any,
     ) -> bytes | None:
         req = self._client.build_request(
             method,
